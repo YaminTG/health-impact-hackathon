@@ -1,0 +1,43 @@
+{
+  "_note": "MOCK, anonymized, aggregated data for demonstration only. No personal data.",
+  "period": { "en": "Last 30 days (mock)", "ar": "آخر 30 يوماً (بيانات تجريبية)" },
+  "kpis": {
+    "scans": 12480,
+    "activeUsers": 2310,
+    "highRiskScanShare": 0.31,
+    "fitRequests": 412
+  },
+  "scansByArea": [
+    { "en": "Khalda", "ar": "خلدا", "value": 2140 },
+    { "en": "Tla' Al-Ali", "ar": "تلاع العلي", "value": 1890 },
+    { "en": "Sweifieh", "ar": "الصويفية", "value": 1720 },
+    { "en": "Marka", "ar": "ماركا", "value": 1510 },
+    { "en": "Jabal Amman", "ar": "جبل عمان", "value": 1340 },
+    { "en": "Abu Nseir", "ar": "أبو نصير", "value": 1180 },
+    { "en": "Hashmi Al-Shamali", "ar": "الهاشمي الشمالي", "value": 1020 },
+    { "en": "Jabal Al-Weibdeh", "ar": "جبل اللويبدة", "value": 880 }
+  ],
+  "highRiskPatterns": [
+    { "key": "lowFiber", "en": "Fewer than 3 wholegrain days / week", "ar": "أقل من 3 أيام حبوب كاملة أسبوعياً", "value": 46 },
+    { "key": "sugaryDrinks", "en": "Sugary drinks 4+ times / week", "ar": "مشروبات سكرية 4 مرات أو أكثر أسبوعياً", "value": 33 },
+    { "key": "upfSnacks", "en": "Ultra-processed snacks 5+ / week", "ar": "وجبات خفيفة فائقة المعالجة 5 مرات أو أكثر", "value": 29 },
+    { "key": "processedMeat", "en": "Processed meat 3+ times / week", "ar": "لحوم مصنعة 3 مرات أو أكثر أسبوعياً", "value": 27 }
+  ],
+  "screeningByArea": [
+    { "en": "Marka", "ar": "ماركا", "requests": 78, "eligible": 610 },
+    { "en": "Tla' Al-Ali", "ar": "تلاع العلي", "requests": 71, "eligible": 420 },
+    { "en": "Khalda", "ar": "خلدا", "requests": 64, "eligible": 380 },
+    { "en": "Hashmi Al-Shamali", "ar": "الهاشمي الشمالي", "requests": 59, "eligible": 540 },
+    { "en": "Abu Nseir", "ar": "أبو نصير", "requests": 52, "eligible": 300 },
+    { "en": "Sweifieh", "ar": "الصويفية", "requests": 47, "eligible": 260 },
+    { "en": "Jabal Amman", "ar": "جبل عمان", "requests": 41, "eligible": 230 }
+  ],
+  "weeklyTrend": [
+    { "week": "W1", "scans": 2210, "avgGutScore": 61 },
+    { "week": "W2", "scans": 2480, "avgGutScore": 63 },
+    { "week": "W3", "scans": 2690, "avgGutScore": 64 },
+    { "week": "W4", "scans": 2950, "avgGutScore": 67 },
+    { "week": "W5", "scans": 3130, "avgGutScore": 69 },
+    { "week": "W6", "scans": 3420, "avgGutScore": 70 }
+  ]
+}

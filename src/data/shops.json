@@ -1,0 +1,8 @@
+{
+  "_note": "MOCK partner shops for the prototype. Names are invented; distances are illustrative.",
+  "shops": [
+    { "id": "s1", "nameEn": "Sunbula Healthy Market", "nameAr": "سوق سنبلة الصحي", "areaEn": "Khalda", "areaAr": "خلدا", "distanceKm": 0.8 },
+    { "id": "s2", "nameEn": "Hakoura Grocery", "nameAr": "بقالة الحاكورة", "areaEn": "Jabal Al-Weibdeh", "areaAr": "جبل اللويبدة", "distanceKm": 1.6 },
+    { "id": "s3", "nameEn": "Zaytouna Wholefoods", "nameAr": "زيتونة للأغذية الكاملة", "areaEn": "Sweifieh", "areaAr": "الصويفية", "distanceKm": 2.4 }
+  ]
+}
