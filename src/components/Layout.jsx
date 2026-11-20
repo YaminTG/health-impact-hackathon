@@ -1,5 +1,5 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { House, ScanLine, HeartPulse, Info, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { House, ScanLine, HeartPulse, Info, Settings, ChevronLeft, ChevronRight, UtensilsCrossed } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
 
 export function TopBar({ title, back }) {
@@ -38,6 +38,7 @@ export function BottomNav() {
   const items = [
     { to: '/', icon: House, label: t('nav.home'), end: true },
     { to: '/scan', icon: ScanLine, label: t('nav.scan') },
+    { to: '/places', icon: UtensilsCrossed, label: t('nav.places') },
     { to: '/gut-score', icon: HeartPulse, label: t('nav.gut') },
     { to: '/about', icon: Info, label: t('nav.about') },
   ];

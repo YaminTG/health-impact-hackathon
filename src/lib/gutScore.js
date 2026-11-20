@@ -1,4 +1,4 @@
-import { dietFlags } from './scoring.js';
+import { dietFlags, isFood } from './scoring.js';
 import { getScans, addScan } from './storage.js';
 import { getProduct } from './catalog.js';
 
@@ -18,7 +18,8 @@ export function weekStart(now = Date.now()) {
 
 export function weeklyGutScore(scans = getScans(), now = Date.now()) {
   const start = weekStart(now);
-  const week = scans.filter((s) => s.ts >= start && s.ts <= now + DAY);
+  // Only food counts toward the Gut Score (cosmetics/household are excluded)
+  const week = scans.filter((s) => s.ts >= start && s.ts <= now + DAY && isFood(s.product));
   let meatCount = 0;
   let sugarCount = 0;
   const fiberDaySet = new Set();

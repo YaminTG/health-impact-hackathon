@@ -110,7 +110,7 @@ button:disabled { cursor: default; opacity: 0.55; }
   height: calc(var(--nav-h) + var(--safe-b));
   padding-bottom: var(--safe-b);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   background: var(--surface);
   border-top: 1px solid var(--border);
 }
@@ -120,7 +120,9 @@ button:disabled { cursor: default; opacity: 0.55; }
   align-items: center;
   justify-content: center;
   gap: 2px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  text-align: center;
+  line-height: 1.2;
   color: var(--muted);
   font-weight: 500;
 }
@@ -407,6 +409,8 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 .risk-badge.tier-red { background: var(--red); }
 .risk-badge.tier-amber { background: #d97706; }
 .risk-badge.tier-green { background: var(--green); }
+.risk-badge.tier-unknown { background: #64748b; }
+.tier-dot.tier-unknown { background: #94a3b8; }
 .rule-card {
   background: var(--surface);
   border-radius: var(--radius-sm);
@@ -532,6 +536,52 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 .switch span { position: absolute; top: 3px; inset-inline-start: 3px; width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); transition: inset-inline-start 0.2s; }
 .switch.on { background: var(--primary); }
 .switch.on span { inset-inline-start: 25px; }
+
+/* ---------- product kinds / places ---------- */
+.seg-full { display: flex; width: 100%; }
+.seg-full button { flex: 1; padding: 8px 6px; font-size: 0.88rem; }
+.seg button { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.preview-verdict { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: var(--radius-sm); background: #f3f7f6; }
+.btn-sm { min-height: 38px; padding: 6px 12px; font-size: 0.88rem; border-radius: 10px; flex-shrink: 0; }
+.places-link { color: var(--primary); }
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 4px 14px;
+  padding-inline: 14px 6px;
+  min-height: 52px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+}
+.search-box:focus-within { border-color: var(--primary); }
+.search-input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font: inherit; font-size: 16px; color: var(--text); padding: 8px 0; }
+.search-input::-webkit-search-cancel-button { display: none; }
+.chip-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.chip-row::-webkit-scrollbar { display: none; }
+.chip-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text); padding: 6px 14px; font-size: 0.88rem; white-space: nowrap; flex-shrink: 0; }
+.chip-btn:active { background: var(--primary-50); }
+.dish-insight { display: flex; flex-direction: column; gap: 8px; }
+.dish-insight-head { display: flex; gap: 10px; align-items: center; }
+.dish-insight-head > div { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.list-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.list-head .seg button { padding: 6px 10px; font-size: 0.82rem; }
+.place-card { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.place-head { display: flex; gap: 12px; align-items: center; width: 100%; }
+.place-main { display: flex; flex-direction: column; min-width: 0; }
+.place-main h3 { font-size: 1.05rem; }
+.place-meta { display: inline-flex; align-items: center; gap: 4px; color: var(--primary); font-weight: 600; }
+.mini-menu { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem; }
+.mini-menu li { display: flex; align-items: center; gap: 8px; }
+.mini-menu li span:nth-child(2) { flex: 1; }
+.mini-menu .tier-dot, .menu-main .tier-dot, .chip .tier-dot { width: 10px; height: 10px; display: inline-block; vertical-align: middle; }
+.place-hero { display: flex; gap: 16px; align-items: center; }
+.place-hero > div { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.menu-item { gap: 6px; }
+.menu-row { display: flex; align-items: center; gap: 10px; }
+.menu-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
 /* ---------- charts / dashboard ---------- */
 .barchart { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }

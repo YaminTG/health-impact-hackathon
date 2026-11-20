@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ScanLine, TriangleAlert, ChevronLeft, ChevronRight, Beef, Wheat } from 'lucide-react';
+import { ScanLine, TriangleAlert, ChevronLeft, ChevronRight, Beef, Wheat, UtensilsCrossed } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import ScreeningNudge from '../components/ScreeningNudge.jsx';
 import ScoreRing from '../components/ScoreRing.jsx';
@@ -31,6 +31,15 @@ export default function Home() {
           <strong>{t('home.scanTitle')}</strong>
           <small>{t('home.scanText')}</small>
         </span>
+      </Link>
+
+      <Link to="/places" className="card warn-link places-link">
+        <UtensilsCrossed size={24} />
+        <span>
+          <strong>{t('home.placesTitle')}</strong>
+          <small>{t('home.placesText')}</small>
+        </span>
+        <Chevron size={20} />
       </Link>
 
       <Link to="/gut-score" className="card gut-card">

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Camera, CameraOff, Search, TriangleAlert, ScanText, Image as ImageIcon } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
 import { findByBarcode } from '../lib/catalog.js';
-import { lookupOpenFoodFacts } from '../lib/openFoodFacts.js';
+import { lookupBarcodeOnline } from '../lib/openFoodFacts.js';
 
 let readerPromise = null;
 /** Lazy-load ZXing (keeps the main bundle small). */
@@ -101,9 +101,9 @@ export default function BarcodeScanner({ onFound, onTryPhoto }) {
       // 1) our own database (works offline)
       const local = findByBarcode(c);
       if (local) return onFound(local, 'barcode');
-      // 2) Open Food Facts
-      const off = await lookupOpenFoodFacts(c);
-      if (off) return onFound(off, 'off');
+      // 2) Open Food Facts -> Open Beauty Facts -> Open Products Facts
+      const hit = await lookupBarcodeOnline(c);
+      if (hit) return onFound(hit.product, hit.source);
       // 3) not found anywhere -> offer the photo path
       setStatus('notFound');
     } catch (e) {

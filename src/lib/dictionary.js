@@ -74,6 +74,44 @@ export const DICTIONARY = {
   ],
 };
 
+// =============================================================================
+//  NON-FOOD (cosmetics, personal care, household): ingredients of concern.
+//  Only substances with an IARC classification or a legal ban/restriction.
+//  Matched against the INGREDIENT list only (never the product name), after
+//  removing phrases like "talc-free" / "خالي من التلك".
+//  The tier/evidence/source for each id lives in scoring.js (CONCERN_RULES).
+// =============================================================================
+export const CONCERNS = {
+  mercury: ['mercury', 'mercurous chloride', 'mercuric', 'calomel', 'hydrargyrum', 'زئبق', 'كلوريد الزئبق'],
+  lead: ['lead', 'lead acetate', 'lead sulfide', 'lead sulphide', 'galena', 'plumbum', 'رصاص', 'كبريتيد الرصاص', 'اسيتات الرصاص'],
+  formaldehyde: ['formaldehyde', 'formalin', 'methylene glycol', 'methanediol', 'فورمالديهايد', 'فورمالدهيد', 'فورمالين'],
+  formaldehyde_releaser: [
+    'dmdm hydantoin', 'quaternium-15', 'imidazolidinyl urea', 'diazolidinyl urea', 'bronopol',
+    '2-bromo-2-nitropropane-1,3-diol', 'sodium hydroxymethylglycinate', 'methenamine', 'polyoxymethylene urea',
+    'برونوبول', 'دي ام دي ام هيدانتوين',
+  ],
+  talc: ['talc', 'talcum', 'تلك', 'التلك', 'بودره التلك'],
+  coal_tar: ['coal tar', 'pix lithanthracis', 'قطران الفحم'],
+  hydroquinone: ['hydroquinone', 'هيدروكينون', 'هيدروكوينون'],
+  banned_paraben: ['isopropylparaben', 'isobutylparaben', 'phenylparaben', 'benzylparaben', 'pentylparaben'],
+};
+
+// Words that suggest the label is a cosmetic / personal-care product.
+export const COSMETIC_HINTS = [
+  'aqua', 'glycerin', 'parfum', 'fragrance', 'cetearyl', 'cetyl alcohol', 'dimethicone', 'sodium laureth sulfate',
+  'sodium lauryl sulfate', 'cocamidopropyl', 'phenoxyethanol', 'tocopheryl', 'butylene glycol', 'petrolatum',
+  'paraben', 'ci 77', 'kohl', 'كحل', 'eyeliner', 'mascara', 'lipstick', 'shampoo', 'شامبو', 'conditioner', 'cream',
+  'كريم', 'lotion', 'لوشن', 'serum', 'سيروم', 'cosmetic', 'تجميل', 'for external use', 'للاستعمال الخارجي',
+  'skin', 'بشره', 'hair', 'شعر', 'talc', 'powder', 'بودره', 'deodorant', 'مزيل عرق', 'toothpaste', 'معجون اسنان',
+];
+
+// Words that suggest a household / cleaning / other non-food product.
+export const HOUSEHOLD_HINTS = [
+  'sodium hypochlorite', 'هيبوكلوريت', 'bleach', 'كلور', 'detergent', 'منظف', 'cleaner', 'disinfectant', 'معقم',
+  'surfactant', 'dishwashing', 'جلي', 'laundry', 'غسيل', 'air freshener', 'معطر جو', 'insecticide', 'مبيد',
+  'methylisothiazolinone', 'benzalkonium', 'do not swallow', 'لا تبتلع',
+];
+
 // How many E-numbers (plus UPF markers) count as "many" -> ultra-processed.
 export const UPF_THRESHOLD = 3;
 

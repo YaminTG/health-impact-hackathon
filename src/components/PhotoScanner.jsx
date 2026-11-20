@@ -2,9 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Camera, RotateCcw, Keyboard, TriangleAlert, Sparkles } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
 import { recognizeLabel } from '../lib/ocr.js';
-import { classify, CATEGORIES, emojiFor } from '../lib/classify.js';
+import { classify, classifyNonFood, detectKind, CATEGORIES, KINDS, emojiFor } from '../lib/classify.js';
+import { scoreProduct } from '../lib/scoring.js';
+import RiskBadge from './RiskBadge.jsx';
 
-export default function PhotoScanner({ onDone }) {
+export default function PhotoScanner({ onDone, initialKind = '' }) {
   const { t } = useI18n();
   const fileRef = useRef(null);
   const [phase, setPhase] = useState('idle'); // idle | working | review
@@ -12,14 +14,24 @@ export default function PhotoScanner({ onDone }) {
   const [preview, setPreview] = useState('');
   const [text, setText] = useState('');
   const [name, setName] = useState('');
+  const [kindOverride, setKindOverride] = useState(initialKind);
   const [catOverride, setCatOverride] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => () => preview && URL.revokeObjectURL(preview), [preview]);
 
-  // Live classification preview while the user edits the text
-  const extracted = useMemo(() => classify(text), [text]);
-  const category = catOverride || extracted.category;
+  // Live extraction + verdict preview while the user edits the text
+  const kind = kindOverride || detectKind(text);
+  const draft = useMemo(() => {
+    if (kind === 'food') {
+      const ex = classify(text);
+      const category = catOverride || ex.category;
+      const { signals, ...rest } = ex;
+      return { product: { ...rest, kind: 'food', category, emoji: emojiFor(category) }, signals };
+    }
+    return { product: classifyNonFood(text, kind), signals: [] };
+  }, [text, kind, catOverride]);
+  const verdict = scoreProduct(draft.product);
 
   async function onFile(e) {
     const file = e.target.files?.[0];
@@ -42,9 +54,8 @@ export default function PhotoScanner({ onDone }) {
 
   function analyze() {
     const cleanName = name.trim() || t('ocr.defaultName');
-    const p = { ...extracted, category, emoji: emojiFor(category) };
+    const p = { ...draft.product };
     p.productName = p.productNameAr = p.nameEn = p.nameAr = cleanName;
-    delete p.signals;
     onDone(p);
   }
 
@@ -102,6 +113,26 @@ export default function PhotoScanner({ onDone }) {
           <div className="card section">
             <h2 className="section-title">{t('ocr.review')}</h2>
             <p className="muted small">{t('ocr.reviewHelp')}</p>
+
+            <div className="field">
+              <span className="small">{t('kind.question')}</span>
+              <div className="seg seg-full" role="radiogroup">
+                {KINDS.map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    role="radio"
+                    aria-checked={kind === k}
+                    className={kind === k ? 'on' : ''}
+                    onClick={() => setKindOverride(k)}
+                  >
+                    {t(`kind.${k}`)}
+                  </button>
+                ))}
+              </div>
+              {!kindOverride && text.trim() && <span className="muted small">{t('kind.auto')}</span>}
+            </div>
+
             <label className="field">
               <span className="small">{t('ocr.productName')}</span>
               <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
@@ -113,21 +144,25 @@ export default function PhotoScanner({ onDone }) {
               onChange={(e) => setText(e.target.value)}
               placeholder="المكونات: ... / Ingredients: ..."
             />
-            <label className="field">
-              <span className="small">{t('ocr.detected')}</span>
-              <select className="input" value={category} onChange={(e) => setCatOverride(e.target.value)}>
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {emojiFor(c)} {t(`cat.${c}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {extracted.signals.length > 0 && (
+
+            {kind === 'food' && (
+              <label className="field">
+                <span className="small">{t('ocr.detected')}</span>
+                <select className="input" value={draft.product.category} onChange={(e) => setCatOverride(e.target.value)}>
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {emojiFor(c)} {t(`cat.${c}`)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+
+            {kind === 'food' && draft.signals.length > 0 && (
               <div>
                 <p className="small muted">{t('ocr.signals')}</p>
                 <div className="signal-chips">
-                  {extracted.signals.map((s) => (
+                  {draft.signals.map((s) => (
                     <span key={s.key} className={`chip chip-${s.tone === 'neutral' ? 'x' : s.tone}`}>
                       {t(s.key, s.vars)}
                     </span>
@@ -135,6 +170,23 @@ export default function PhotoScanner({ onDone }) {
                 </div>
               </div>
             )}
+
+            {text.trim() && (
+              <div className="preview-verdict">
+                <span className="small muted">{t('ocr.preview')}</span>
+                <RiskBadge verdict={verdict} size="sm" />
+                {kind !== 'food' && verdict.rules[0].id !== 'no_concerns' && (
+                  <div className="signal-chips">
+                    {verdict.rules.map((r) => (
+                      <span key={r.id} className={`chip chip-${r.tier}`}>
+                        {t(`concern.${r.id}`)}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             <button className="btn btn-primary btn-block btn-lg" onClick={analyze} disabled={!text.trim()}>
               <Sparkles size={18} /> {t('ocr.analyze')}
             </button>

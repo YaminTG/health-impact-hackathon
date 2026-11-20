@@ -9,6 +9,9 @@
 // Wording rules (enforced in i18n strings): never "organic" (say "healthier option"),
 // never "this product causes cancer" (risk is linked to regular intake / diet patterns).
 
+import { CONCERNS } from './dictionary.js';
+import { normalize, containsAny, stripFreeClaims } from './classify.js';
+
 export const HIGH_SUGAR_PER_100G = 10; // g added sugar per 100 g / 100 ml
 export const HIGH_FIBER_PER_100G = 6; // g fibre per 100 g ("high fibre" claim threshold)
 
@@ -81,8 +84,48 @@ export function isStaple(p) {
   return STAPLE_PATTERNS.some((re) => re.test(name));
 }
 
+// ---------------------------------------------------------------------------
+// NON-FOOD (cosmetics / personal care / household): ingredient-of-concern rules.
+// These are NOT colorectal-cancer rules. IARC classes describe hazard, not the
+// risk at cosmetic doses; the UI says so on every non-food result.
+// ---------------------------------------------------------------------------
+export const CONCERN_RULES = [
+  { id: 'mercury', tier: 'red', evidence: 'banned', sourceKey: 'who_mercury' },
+  { id: 'lead', tier: 'red', evidence: 'iarc2aToxic', sourceKey: 'iarc_lead' },
+  { id: 'formaldehyde', tier: 'red', evidence: 'iarc1', sourceKey: 'iarc_formaldehyde' },
+  { id: 'formaldehyde_releaser', tier: 'amber', evidence: 'releaser', sourceKey: 'eu_releasers' },
+  { id: 'talc', tier: 'amber', evidence: 'iarc2a', sourceKey: 'iarc_talc' },
+  { id: 'coal_tar', tier: 'amber', evidence: 'iarc1Occupational', sourceKey: 'iarc_coaltar' },
+  { id: 'hydroquinone', tier: 'amber', evidence: 'euRestricted', sourceKey: 'eu_cosmetics' },
+  { id: 'banned_paraben', tier: 'amber', evidence: 'euBanned', sourceKey: 'eu_parabens' },
+];
+const NO_CONCERN_RULE = { id: 'no_concerns', tier: 'green', evidence: 'none', sourceKey: 'concern_lists' };
+
+export const isFood = (p) => !p?.kind || p.kind === 'food';
+
+function ingredientText(p) {
+  const parts = [...(p.ingredients || []), ...(p.ingredientsAr || []), p.ingredientsText || ''];
+  return stripFreeClaims(normalize(parts.join(', ')));
+}
+
+const NO_INGREDIENTS_RULE = { id: 'no_ingredients', tier: 'green', evidence: 'none', sourceKey: 'concern_lists' };
+
+function scoreNonFood(p) {
+  const text = ingredientText(p);
+  // Nothing to check: say so instead of implying the product is fine.
+  if (text.replace(/[\s,]/g, '').length < 3) {
+    return { kind: p.kind, tier: 'green', unknown: true, protective: false, rules: [NO_INGREDIENTS_RULE], primary: NO_INGREDIENTS_RULE, staple: false };
+  }
+  const matched = CONCERN_RULES.filter((r) => containsAny(text, CONCERNS[r.id] || []));
+  let tier = 'green';
+  for (const r of matched) if (TIER_RANK[r.tier] > TIER_RANK[tier]) tier = r.tier;
+  const rules = matched.length ? [...matched].sort((a, b) => TIER_RANK[b.tier] - TIER_RANK[a.tier]) : [NO_CONCERN_RULE];
+  return { kind: p.kind, tier, protective: false, rules, primary: rules[0], staple: false };
+}
+
 export function scoreProduct(product) {
   const p = product || {};
+  if (!isFood(p)) return scoreNonFood(p);
   const staple = isStaple(p);
   const ctx = { staple, plainDairy: staple && p.category === 'dairy' };
   const matched = RULES.filter((r) => r.test(p, ctx)).map(({ test, ...r }) => r);
@@ -97,11 +140,12 @@ export function scoreProduct(product) {
   const sorted = [...rules].sort((a, b) => TIER_RANK[b.tier] - TIER_RANK[a.tier]);
   const primary = sorted[0];
 
-  return { tier, protective: tier === 'green' && protective, rules: sorted, primary, staple };
+  return { kind: 'food', tier, protective: tier === 'green' && protective, rules: sorted, primary, staple };
 }
 
 /** Flags used by the Weekly Gut Score */
 export function dietFlags(product) {
+  if (!isFood(product)) return { meat: false, processedMeat: false, fiber: false, sugar: false, refined: false };
   const { rules } = scoreProduct(product);
   const ids = new Set(rules.map((r) => r.id));
   return {
@@ -115,6 +159,11 @@ export function dietFlags(product) {
 
 /** Why an alternative is better than the original (list of i18n keys). */
 export function swapReasons(original, alt) {
+  if (!isFood(original) || !isFood(alt)) {
+    const before = scoreProduct(original);
+    const after = scoreProduct(alt);
+    return TIER_RANK[after.tier] < TIER_RANK[before.tier] ? ['swap.noConcerns'] : [];
+  }
   const o = dietFlags(original);
   const a = dietFlags(alt);
   const reasons = [];

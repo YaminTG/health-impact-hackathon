@@ -1,6 +1,6 @@
 // Keyword/regex classifier: label text (Arabic and/or English) -> our product schema.
 // This EXTRACTS data only. The risk verdict comes from scoring.js.
-import { DICTIONARY, UPF_THRESHOLD, OFF_CATEGORY_MAP } from './dictionary.js';
+import { DICTIONARY, UPF_THRESHOLD, OFF_CATEGORY_MAP, COSMETIC_HINTS, HOUSEHOLD_HINTS } from './dictionary.js';
 
 const CATEGORY_EMOJI = {
   processed_meat: '🥫', red_meat: '🥩', refined_grain: '🍞', wholegrain: '🌾',
@@ -192,3 +192,63 @@ export function classify(text = '', hints = {}) {
 
 export const CATEGORIES = Object.keys(CATEGORY_EMOJI);
 export const emojiFor = (cat) => CATEGORY_EMOJI[cat] || '🛒';
+
+// ---------------------------------------------------------------------------
+// Non-food products (cosmetics / personal care / household)
+// ---------------------------------------------------------------------------
+export const KINDS = ['food', 'cosmetic', 'household'];
+export const KIND_EMOJI = { food: '🛒', cosmetic: '🧴', household: '🧽' };
+
+/** Count keyword hits (used to guess the product type). */
+function countHits(norm, list) {
+  return list.reduce((n, k) => n + (toRegex(k).test(norm) ? 1 : 0), 0);
+}
+
+/** Best guess of what kind of product a label belongs to. User can override. */
+export function detectKind(text = '') {
+  const norm = normalize(text);
+  const cosmetic = countHits(norm, COSMETIC_HINTS);
+  const household = countHits(norm, HOUSEHOLD_HINTS);
+  const D = DICTIONARY;
+  const food =
+    countHits(norm, ['nutrition', 'energy', 'kcal', 'calories', 'سعرات', 'القيمه الغذائيه', 'protein', 'بروتين', 'carbohydrate', 'كربوهيدرات']) +
+    (has(norm, D.processedMeat) ? 2 : 0) + (has(norm, D.redMeat) ? 1 : 0) + (has(norm, D.wholegrain) ? 1 : 0) +
+    (has(norm, D.refinedGrain) ? 1 : 0) + (has(norm, D.drink) ? 1 : 0) + (has(norm, D.sugar) ? 1 : 0);
+  if (cosmetic >= 2 && cosmetic > food && cosmetic >= household) return 'cosmetic';
+  if (household >= 2 && household > food) return 'household';
+  return 'food';
+}
+
+/** Remove "xxx-free" / "خالي من xxx" phrases so "talc-free" does not match talc. */
+export function stripFreeClaims(norm) {
+  return norm
+    .replace(/[a-z0-9]+[- ]free/g, ' ')
+    .replace(/free (of|from) [a-z0-9-]+/g, ' ')
+    .replace(/(خالي|خاليه|خال) من [^\s,]+/g, ' ')
+    .replace(/بدون [^\s,]+/g, ' ');
+}
+
+/** Does normalised ingredient text contain any keyword of this list? */
+export function containsAny(norm, list) {
+  return has(norm, list);
+}
+
+/**
+ * Non-food extraction: product name + ingredient list. The concern rules in
+ * scoring.js decide the verdict from these ingredients.
+ */
+export function classifyNonFood(text = '', kind = 'cosmetic', hints = {}) {
+  const name = hints.name || '';
+  const nameAr = hints.nameAr || '';
+  return {
+    kind,
+    productName: name || nameAr,
+    productNameAr: nameAr || name,
+    nameEn: name || nameAr,
+    nameAr: nameAr || name,
+    ingredients: splitIngredients(text),
+    ingredientsText: String(text).slice(0, 4000),
+    category: 'other',
+    emoji: KIND_EMOJI[kind] || '🧴',
+  };
+}

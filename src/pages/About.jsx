@@ -10,6 +10,9 @@ const SOURCES = [
   'WCRF/AICR Continuous Update Project: Diet, Nutrition, Physical Activity and Colorectal Cancer (2018)',
   'WCRF/AICR Cancer Prevention Recommendations (2018)',
   'WHO Guideline: Sugars intake for adults and children (2015)',
+  'IARC Monographs vol. 87 (inorganic lead), vol. 100F (formaldehyde, coal tar), vol. 136 (talc, 2024)',
+  'WHO: Mercury in skin lightening products (2019); Minamata Convention on Mercury',
+  'EU Cosmetics Regulation (EC) 1223/2009; Regulations (EU) 358/2014 and 2022/1181',
 ];
 
 export default function About() {
@@ -43,6 +46,8 @@ export default function About() {
           <li>{t('about.how1')}</li>
           <li>{t('about.how2')}</li>
           <li>{t('about.how3')}</li>
+          <li>{t('about.how4')}</li>
+          <li>{t('about.how5')}</li>
         </ol>
       </section>
 

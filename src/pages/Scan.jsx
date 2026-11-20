@@ -8,6 +8,7 @@ import PhotoScanner from '../components/PhotoScanner.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { PRODUCTS } from '../lib/catalog.js';
 import { scoreProduct } from '../lib/scoring.js';
+import { KINDS } from '../lib/classify.js';
 import { addScan } from '../lib/storage.js';
 
 export default function Scan() {
@@ -15,6 +16,8 @@ export default function Scan() {
   const navigate = useNavigate();
   const [mode, setMode] = useState('menu'); // menu | barcode | photo
   const [busy, setBusy] = useState(false);
+  const [demoKind, setDemoKind] = useState('food');
+  const demoProducts = PRODUCTS.filter((p) => (p.kind || 'food') === demoKind);
 
   /** Every scan path ends here: save to history and show the result. */
   function finish(product, source) {
@@ -60,8 +63,15 @@ export default function Scan() {
       <section className="section">
         <h2 className="section-title">{t('scan.demoTitle')}</h2>
         <p className="muted small">{t('scan.demoText')}</p>
+        <div className="seg seg-full" role="tablist">
+          {KINDS.map((k) => (
+            <button key={k} role="tab" aria-selected={demoKind === k} className={demoKind === k ? 'on' : ''} onClick={() => setDemoKind(k)}>
+              {t(`kind.${k}`)}
+            </button>
+          ))}
+        </div>
         <div className="demo-grid">
-          {PRODUCTS.map((p) => (
+          {demoProducts.map((p) => (
             <button key={p.id} className="demo-tile" onClick={() => pickDemo(p)} disabled={busy}>
               <span className="demo-emoji">{p.emoji}</span>
               <span className="demo-name">{pick(p)}</span>

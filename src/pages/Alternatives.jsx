@@ -7,6 +7,8 @@ import { productName } from '../components/ProductRow.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { getScan } from '../lib/storage.js';
 import { getAlternatives } from '../lib/catalog.js';
+import { restaurantAlternatives } from '../lib/places.js';
+import { swapReasons } from '../lib/scoring.js';
 
 export default function Alternatives() {
   const { id } = useParams();
@@ -15,7 +17,9 @@ export default function Alternatives() {
   if (!scan) return <Page title={t('alt.title')} back><p>{t('res.notFound')}</p></Page>;
 
   const p = scan.product;
-  const alts = getAlternatives(p);
+  const alts = p.restaurantId
+    ? restaurantAlternatives(p).map((x) => ({ ...x, reasons: swapReasons(p, x.alt) }))
+    : getAlternatives(p);
   const price = (n) => (n ? `≈ ${n.toFixed(2)} ${t('common.jod')}` : '');
 
   return (
@@ -35,7 +39,8 @@ export default function Alternatives() {
               <div>
                 <h2>{pick(alt)}</h2>
                 <small className="muted">
-                  {alt.size} · {price(alt.approxPriceJOD)} ({t('common.approx')})
+                  {alt.size ? `${alt.size} · ` : ''}
+                  {price(alt.approxPriceJOD)} ({t('common.approx')})
                 </small>
               </div>
             </div>

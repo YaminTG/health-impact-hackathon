@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n/index.jsx';
-import { scoreProduct } from '../lib/scoring.js';
+import { scoreProduct, isFood } from '../lib/scoring.js';
 import { TierDot } from './RiskBadge.jsx';
 
 export function productName(product, pick, t) {
@@ -21,10 +21,10 @@ export default function ScanRow({ scan }) {
       <span className="scan-row-main">
         <strong>{productName(scan.product, pick, t)}</strong>
         <small>
-          {t(`cat.${scan.product.category}`)} · {when}
+          {isFood(scan.product) ? t(`cat.${scan.product.category}`) : t(`kind.${scan.product.kind}`)} · {when}
         </small>
       </span>
-      <TierDot tier={v.tier} />
+      <TierDot tier={v.unknown ? 'unknown' : v.tier} />
     </Link>
   );
 }

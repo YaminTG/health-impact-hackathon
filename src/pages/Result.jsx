@@ -7,8 +7,9 @@ import ScreeningNudge from '../components/ScreeningNudge.jsx';
 import { productName } from '../components/ProductRow.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { getScan } from '../lib/storage.js';
-import { scoreProduct } from '../lib/scoring.js';
+import { scoreProduct, isFood } from '../lib/scoring.js';
 import { getAlternatives } from '../lib/catalog.js';
+import { restaurantAlternatives } from '../lib/places.js';
 import { isScreeningEligible } from '../lib/eligibility.js';
 
 function Fact({ label, value }) {
@@ -39,7 +40,9 @@ export default function Result() {
 
   const p = scan.product;
   const v = scoreProduct(p);
-  const alts = getAlternatives(p);
+  const food = isFood(p);
+  const alts = p.restaurantId ? restaurantAlternatives(p) : getAlternatives(p);
+  const typeLabel = food ? t(`cat.${p.category}`) : t(`kind.${p.kind}`);
   const Arrow = dir === 'rtl' ? ArrowLeft : ArrowRight;
   const ingredients = (lang === 'ar' && p.ingredientsAr?.length ? p.ingredientsAr : p.ingredients) || [];
   const yesNo = (b) => (b ? t('common.yes') : t('common.no'));
@@ -51,11 +54,12 @@ export default function Result() {
         <span className="result-emoji">{p.emoji || '🛒'}</span>
         <h1 className="result-name">{productName(p, pick, t)}</h1>
         <p className="muted small">
-          {t(`cat.${p.category}`)} · {t(`res.source.${scan.source}`)}
+          {typeLabel} · {t(`res.source.${scan.source}`)}
         </p>
         <RiskBadge verdict={v} />
         <p className="result-reason">{t(`reason.${v.primary.id}`)}</p>
-        {v.tier !== 'green' && <p className="muted small">{t('res.regular')}</p>}
+        {food && v.tier !== 'green' && <p className="muted small">{t('res.regular')}</p>}
+        {!food && <p className="muted small">{t('res.hazardNote')}</p>}
       </section>
 
       {alts.length > 0 && (
@@ -83,13 +87,24 @@ export default function Result() {
 
       <section className="section">
         <h2 className="section-title">{t('res.facts')}</h2>
-        <div className="card facts">
-          <Fact label={t('res.fact.category')} value={t(`cat.${p.category}`)} />
-          <Fact label={t('res.fact.nitrites')} value={yesNo(p.containsNitrites)} />
-          <Fact label={t('res.fact.fiber')} value={g(p.fiberPer100g)} />
-          <Fact label={t('res.fact.sugar')} value={g(p.addedSugarPer100g)} />
-          <Fact label={t('res.fact.upf')} value={yesNo(p.ultraProcessed)} />
-        </div>
+        {food ? (
+          <div className="card facts">
+            <Fact label={t('res.fact.category')} value={typeLabel} />
+            <Fact label={t('res.fact.nitrites')} value={yesNo(p.containsNitrites)} />
+            <Fact label={t('res.fact.fiber')} value={g(p.fiberPer100g)} />
+            <Fact label={t('res.fact.sugar')} value={g(p.addedSugarPer100g)} />
+            <Fact label={t('res.fact.upf')} value={yesNo(p.ultraProcessed)} />
+          </div>
+        ) : (
+          <div className="card facts">
+            <Fact label={t('res.fact.type')} value={typeLabel} />
+            <Fact label={t('res.fact.checked')} value={(p.ingredients || []).length || t('res.fact.unknown')} />
+            <Fact
+              label={t('res.fact.concerns')}
+              value={v.rules.filter((r) => r.id !== 'no_concerns').map((r) => t(`concern.${r.id}`)).join(lang === 'ar' ? '، ' : ', ') || t('common.none')}
+            />
+          </div>
+        )}
         {ingredients.length > 0 && (
           <details className="card ingredients">
             <summary>{t('res.ingredients')}</summary>
@@ -98,7 +113,7 @@ export default function Result() {
         )}
       </section>
 
-      {v.tier === 'red' && isScreeningEligible() && <ScreeningNudge />}
+      {food && v.tier === 'red' && isScreeningEligible() && <ScreeningNudge />}
 
       <Disclaimer />
 

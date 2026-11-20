@@ -3,6 +3,8 @@
   "shops": [
     { "id": "s1", "nameEn": "Sunbula Healthy Market", "nameAr": "سوق سنبلة الصحي", "areaEn": "Khalda", "areaAr": "خلدا", "distanceKm": 0.8 },
     { "id": "s2", "nameEn": "Hakoura Grocery", "nameAr": "بقالة الحاكورة", "areaEn": "Jabal Al-Weibdeh", "areaAr": "جبل اللويبدة", "distanceKm": 1.6 },
-    { "id": "s3", "nameEn": "Zaytouna Wholefoods", "nameAr": "زيتونة للأغذية الكاملة", "areaEn": "Sweifieh", "areaAr": "الصويفية", "distanceKm": 2.4 }
+    { "id": "s3", "nameEn": "Zaytouna Wholefoods", "nameAr": "زيتونة للأغذية الكاملة", "areaEn": "Sweifieh", "areaAr": "الصويفية", "distanceKm": 2.4 },
+    { "id": "s4", "nameEn": "Nabd Pharmacy", "nameAr": "صيدلية نبض", "areaEn": "Shmeisani", "areaAr": "الشميساني", "distanceKm": 1.1 },
+    { "id": "s5", "nameEn": "Yasmeen Care Pharmacy", "nameAr": "صيدلية ياسمين كير", "areaEn": "Dabouq", "areaAr": "دابوق", "distanceKm": 2.0 }
   ]
 }

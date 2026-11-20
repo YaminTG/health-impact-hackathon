@@ -1,0 +1,98 @@
+{
+  "_note": "MOCK partner restaurants. Names are INVENTED for this prototype; any resemblance to real businesses is coincidental. Each place's healthy score is computed from its menu with the app's own deterministic rules. Prices approximate (JOD).",
+  "restaurants": [
+    {
+      "id": "r1", "nameEn": "Bustan Kitchen", "nameAr": "مطبخ البستان",
+      "cuisineEn": "Levantine · vegetarian-friendly", "cuisineAr": "شامي · مناسب للنباتيين",
+      "areaEn": "Jabal Al-Weibdeh", "areaAr": "جبل اللويبدة", "distanceKm": 1.4,
+      "tags": ["breakfast", "فطور", "vegetarian", "نباتي", "levantine", "شامي"],
+      "menu": [
+        { "dish": "hummus", "priceJOD": 1.5 }, { "dish": "foul", "priceJOD": 1.5 }, { "dish": "falafel", "priceJOD": 0.75 },
+        { "dish": "tabbouleh", "priceJOD": 2.0 }, { "dish": "fattoush", "priceJOD": 2.0 }, { "dish": "mujaddara", "priceJOD": 2.5 },
+        { "dish": "lentil-soup", "priceJOD": 1.75 }, { "dish": "labaneh-wrap", "priceJOD": 1.5 }, { "dish": "laban-ayran", "priceJOD": 0.6 }
+      ]
+    },
+    {
+      "id": "r2", "nameEn": "Jabal Grill House", "nameAr": "بيت الجبل للمشاوي",
+      "cuisineEn": "Grills", "cuisineAr": "مشاوي",
+      "areaEn": "Khalda", "areaAr": "خلدا", "distanceKm": 0.9,
+      "tags": ["grill", "مشاوي", "family", "عائلي"],
+      "menu": [
+        { "dish": "mixed-grill", "priceJOD": 7.5 }, { "dish": "shish-tawook", "priceJOD": 4.5 }, { "dish": "beef-shawarma", "priceJOD": 4.0 },
+        { "dish": "grilled-chicken", "priceJOD": 4.75 }, { "dish": "hummus", "priceJOD": 1.75 }, { "dish": "fattoush", "priceJOD": 2.25 },
+        { "dish": "soft-drink", "priceJOD": 0.75 }
+      ]
+    },
+    {
+      "id": "r3", "nameEn": "Saj Corner", "nameAr": "زاوية الصاج",
+      "cuisineEn": "Shawarma & sandwiches", "cuisineAr": "شاورما وسندويشات",
+      "areaEn": "Tla' Al-Ali", "areaAr": "تلاع العلي", "distanceKm": 1.8,
+      "tags": ["shawarma", "شاورما", "sandwich", "سندويش", "fast food", "وجبات سريعة"],
+      "menu": [
+        { "dish": "chicken-shawarma", "priceJOD": 1.5 }, { "dish": "beef-shawarma", "priceJOD": 3.5 }, { "dish": "falafel", "priceJOD": 0.6 },
+        { "dish": "hot-dog", "priceJOD": 1.75 }, { "dish": "soft-drink", "priceJOD": 0.6 }, { "dish": "lemon-mint", "priceJOD": 1.25 }
+      ]
+    },
+    {
+      "id": "r4", "nameEn": "Taboon House Bakery", "nameAr": "مخبز بيت الطابون",
+      "cuisineEn": "Bakery & traditional", "cuisineAr": "مخبز وأكل تراثي",
+      "areaEn": "Jabal Amman", "areaAr": "جبل عمان", "distanceKm": 2.1,
+      "tags": ["bakery", "مخبز", "breakfast", "فطور", "traditional", "تراثي"],
+      "menu": [
+        { "dish": "manakish", "priceJOD": 0.75 }, { "dish": "labaneh-wrap", "priceJOD": 1.25 }, { "dish": "musakhan", "priceJOD": 4.5 },
+        { "dish": "foul", "priceJOD": 1.25 }, { "dish": "kunafa", "priceJOD": 1.5 }, { "dish": "laban-ayran", "priceJOD": 0.5 }
+      ]
+    },
+    {
+      "id": "r5", "nameEn": "Smash Station", "nameAr": "محطة السماش",
+      "cuisineEn": "Burgers & fast food", "cuisineAr": "برجر ووجبات سريعة",
+      "areaEn": "Sweifieh", "areaAr": "الصويفية", "distanceKm": 2.6,
+      "tags": ["burger", "برجر", "fast food", "وجبات سريعة"],
+      "menu": [
+        { "dish": "beef-burger", "priceJOD": 4.5 }, { "dish": "hot-dog", "priceJOD": 3.0 }, { "dish": "grilled-chicken", "priceJOD": 4.5 },
+        { "dish": "quinoa-salad", "priceJOD": 4.0 }, { "dish": "soft-drink", "priceJOD": 1.0 }
+      ]
+    },
+    {
+      "id": "r6", "nameEn": "Forno Sette", "nameAr": "فورنو سِتّة",
+      "cuisineEn": "Pizza", "cuisineAr": "بيتزا",
+      "areaEn": "Abdoun", "areaAr": "عبدون", "distanceKm": 3.2,
+      "tags": ["pizza", "بيتزا", "italian", "ايطالي"],
+      "menu": [
+        { "dish": "pepperoni-pizza", "priceJOD": 7.0 }, { "dish": "margherita", "priceJOD": 6.0 }, { "dish": "veggie-pizza-ww", "priceJOD": 6.5 },
+        { "dish": "fattoush", "priceJOD": 3.0 }, { "dish": "soft-drink", "priceJOD": 1.25 }
+      ]
+    },
+    {
+      "id": "r7", "nameEn": "Bahr Fish House", "nameAr": "بيت البحر للأسماك",
+      "cuisineEn": "Seafood", "cuisineAr": "مأكولات بحرية",
+      "areaEn": "Marka", "areaAr": "ماركا", "distanceKm": 4.0,
+      "tags": ["fish", "سمك", "seafood", "مأكولات بحرية"],
+      "menu": [
+        { "dish": "grilled-fish", "priceJOD": 8.0 }, { "dish": "lentil-soup", "priceJOD": 1.75 }, { "dish": "tabbouleh", "priceJOD": 2.25 },
+        { "dish": "hummus", "priceJOD": 1.75 }, { "dish": "fattoush", "priceJOD": 2.25 }, { "dish": "lemon-mint", "priceJOD": 1.5 }
+      ]
+    },
+    {
+      "id": "r8", "nameEn": "Green Bowl Café", "nameAr": "مقهى الوعاء الأخضر",
+      "cuisineEn": "Salads & bowls", "cuisineAr": "سلطات وأطباق صحية",
+      "areaEn": "Sweifieh", "areaAr": "الصويفية", "distanceKm": 2.3,
+      "tags": ["healthy", "صحي", "salad", "سلطه", "breakfast", "فطور", "bowl"],
+      "menu": [
+        { "dish": "quinoa-salad", "priceJOD": 4.5 }, { "dish": "oat-bowl", "priceJOD": 3.5 }, { "dish": "labaneh-wrap", "priceJOD": 2.5 },
+        { "dish": "grilled-chicken", "priceJOD": 5.0 }, { "dish": "tabbouleh", "priceJOD": 2.75 }, { "dish": "laban-ayran", "priceJOD": 0.9 }
+      ]
+    },
+    {
+      "id": "r9", "nameEn": "Dar Al-Karam", "nameAr": "دار الكرم",
+      "cuisineEn": "Traditional Jordanian", "cuisineAr": "أكل أردني تقليدي",
+      "areaEn": "Abu Nseir", "areaAr": "أبو نصير", "distanceKm": 5.1,
+      "tags": ["mansaf", "منسف", "traditional", "تراثي", "jordanian", "اردني", "family", "عائلي"],
+      "menu": [
+        { "dish": "mansaf", "priceJOD": 8.0 }, { "dish": "maqluba", "priceJOD": 5.0 }, { "dish": "musakhan", "priceJOD": 5.0 },
+        { "dish": "lentil-soup", "priceJOD": 1.5 }, { "dish": "mujaddara", "priceJOD": 2.5 }, { "dish": "kunafa", "priceJOD": 1.75 },
+        { "dish": "laban-ayran", "priceJOD": 0.5 }
+      ]
+    }
+  ]
+}

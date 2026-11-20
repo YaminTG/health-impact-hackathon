@@ -12,6 +12,8 @@ import About from './pages/About.jsx';
 import Settings from './pages/Settings.jsx';
 import WarningSigns from './pages/WarningSigns.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import Places from './pages/Places.jsx';
+import Place from './pages/Place.jsx';
 
 const OPEN_ROUTES = ['/onboarding', '/dashboard', '/about'];
 
@@ -43,6 +45,8 @@ export default function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/warning-signs" element={<WarningSigns />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/places" element={<Places />} />
+          <Route path="/places/:id" element={<Place />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       )}

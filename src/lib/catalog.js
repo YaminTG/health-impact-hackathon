@@ -25,14 +25,33 @@ const FALLBACK_ALTERNATIVES = {
   wholegrain: ['oats', 'popcorn-plain'],
 };
 
+// Non-food fallbacks, chosen by which ingredient of concern was found.
+const CONCERN_ALTERNATIVES = {
+  mercury: ['c-moisturiser-spf'],
+  hydroquinone: ['c-moisturiser-spf'],
+  lead: ['c-kohl-safe'],
+  talc: ['c-cornstarch'],
+  formaldehyde: ['c-argan-mask'],
+  formaldehyde_releaser: ['c-shampoo-gentle', 'h-cleaner-vinegar'],
+  banned_paraben: ['c-moisturiser-spf', 'c-shampoo-gentle'],
+  coal_tar: ['c-shampoo-gentle'],
+};
+
+function fallbackIds(product, verdict) {
+  if (product.kind && product.kind !== 'food') {
+    const ids = verdict.rules.flatMap((r) => CONCERN_ALTERNATIVES[r.id] || []);
+    const sameKind = ids.filter((id) => getProduct(id)?.kind === product.kind);
+    return sameKind.length ? sameKind : ids;
+  }
+  return FALLBACK_ALTERNATIVES[product.category] || FALLBACK_ALTERNATIVES.other;
+}
+
 /** 2-3 healthier swaps, each with a partner shop and reasons. */
 export function getAlternatives(product) {
   const verdict = scoreProduct(product);
-  const ids = product.alternatives?.length
-    ? product.alternatives
-    : FALLBACK_ALTERNATIVES[product.category] || FALLBACK_ALTERNATIVES.other;
+  const ids = product.alternatives?.length ? product.alternatives : fallbackIds(product, verdict);
 
-  return ids
+  return [...new Set(ids)]
     .filter((id) => id !== product.id)
     .map(getProduct)
     .filter(Boolean)
