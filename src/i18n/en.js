@@ -292,6 +292,7 @@ const en = {
   'dash.uptake': 'uptake',
   'dash.trend': 'Weekly scans & average Gut Score',
   'dash.avgScore': 'avg score',
+  'dash.trendLegend': 'Bars: weekly scans · Green number: average Gut Score',
   'dash.backToApp': 'Back to app',
 };
 export default en;

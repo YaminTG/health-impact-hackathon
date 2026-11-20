@@ -292,6 +292,7 @@ const ar = {
   'dash.uptake': 'نسبة الإقبال',
   'dash.trend': 'المسوحات الأسبوعية ومتوسط نقاط الأمعاء',
   'dash.avgScore': 'متوسط النقاط',
+  'dash.trendLegend': 'الأعمدة: المسوحات الأسبوعية · الرقم الأخضر: متوسط نقاط الأمعاء',
   'dash.backToApp': 'العودة للتطبيق',
 };
 export default ar;

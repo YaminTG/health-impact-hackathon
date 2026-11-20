@@ -10,7 +10,7 @@ export function productName(product, pick, t) {
 export default function ScanRow({ scan }) {
   const { t, pick, lang } = useI18n();
   const v = scoreProduct(scan.product);
-  const when = new Date(scan.ts).toLocaleDateString(lang === 'ar' ? 'ar-JO' : 'en-GB', {
+  const when = new Date(scan.ts).toLocaleDateString(lang === 'ar' ? 'ar-JO-u-nu-latn' : 'en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',

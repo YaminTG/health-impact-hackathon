@@ -10,6 +10,8 @@ import GutScore from './pages/GutScore.jsx';
 import FitKit from './pages/FitKit.jsx';
 import About from './pages/About.jsx';
 import Settings from './pages/Settings.jsx';
+import WarningSigns from './pages/WarningSigns.jsx';
+import Dashboard from './pages/Dashboard.jsx';
 
 const OPEN_ROUTES = ['/onboarding', '/dashboard', '/about'];
 
@@ -39,6 +41,8 @@ export default function App() {
           <Route path="/fit-kit" element={<FitKit />} />
           <Route path="/about" element={<About />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/warning-signs" element={<WarningSigns />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       )}

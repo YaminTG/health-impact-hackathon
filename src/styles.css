@@ -536,7 +536,7 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 /* ---------- charts / dashboard ---------- */
 .barchart { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .bar-row { display: grid; grid-template-columns: minmax(90px, 34%) 1fr auto; align-items: center; gap: 10px; font-size: 0.88rem; }
-.bar-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-label { line-height: 1.3; overflow-wrap: anywhere; }
 .bar-track { height: 14px; border-radius: 7px; background: var(--primary-50); overflow: hidden; }
 .bar-fill { display: block; height: 100%; border-radius: 7px; background: var(--primary); }
 .color-red .bar-fill { background: #e05252; }
