@@ -386,8 +386,8 @@
       "emoji": "🧴",
       "size": "30 g",
       "category": "other",
-      "ingredients": ["aqua", "hydroquinone 4%", "cetyl alcohol", "glycerin", "sodium metabisulfite"],
-      "ingredientsAr": ["ماء", "هيدروكينون 4%", "كحول سيتيلي", "جليسرين", "ميتابيسلفيت الصوديوم"],
+      "ingredients": ["aqua", "hydroquinone 4%", "glyceryl stearate", "glycerin", "sodium metabisulfite"],
+      "ingredientsAr": ["ماء", "هيدروكينون 4%", "ستيارات الجليسريل", "جليسرين", "ميتابيسلفيت الصوديوم"],
       "approxPriceJOD": 4.5,
       "alternatives": ["c-moisturiser-spf"],
       "shopIds": ["s4"]
@@ -401,8 +401,8 @@
       "emoji": "🧴",
       "size": "50 ml",
       "category": "other",
-      "ingredients": ["aqua", "glycerin", "zinc oxide", "cetearyl alcohol", "niacinamide", "tocopherol", "sodium benzoate"],
-      "ingredientsAr": ["ماء", "جليسرين", "أكسيد الزنك", "كحول سيتيريلي", "نياسيناميد", "توكوفيرول", "بنزوات الصوديوم"],
+      "ingredients": ["aqua", "glycerin", "zinc oxide", "shea butter", "niacinamide", "tocopherol", "sodium benzoate"],
+      "ingredientsAr": ["ماء", "جليسرين", "أكسيد الزنك", "زبدة الشيا", "نياسيناميد", "توكوفيرول", "بنزوات الصوديوم"],
       "approxPriceJOD": 6.5,
       "alternatives": [],
       "shopIds": ["s4", "s5"]
@@ -491,8 +491,8 @@
       "emoji": "💆",
       "size": "250 ml",
       "category": "other",
-      "ingredients": ["aqua", "cetearyl alcohol", "argania spinosa kernel oil", "behentrimonium chloride", "sodium benzoate"],
-      "ingredientsAr": ["ماء", "كحول سيتيريلي", "زيت الأرغان", "كلوريد البيهينتريمونيوم", "بنزوات الصوديوم"],
+      "ingredients": ["aqua", "glyceryl stearate", "argania spinosa kernel oil", "behentrimonium chloride", "sodium benzoate"],
+      "ingredientsAr": ["ماء", "ستيارات الجليسريل", "زيت الأرغان", "كلوريد البيهينتريمونيوم", "بنزوات الصوديوم"],
       "approxPriceJOD": 6.0,
       "alternatives": [],
       "shopIds": ["s5"]

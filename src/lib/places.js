@@ -4,7 +4,7 @@ import dishesData from '../data/dishes.json';
 import restaurantsData from '../data/restaurants.json';
 import { scoreProduct, TIER_RANK } from './scoring.js';
 import { normalize } from './classify.js';
-import { PRODUCTS, getShop } from './catalog.js';
+import { PRODUCTS, getShop, containsAlcohol } from './catalog.js';
 
 export const DISHES = dishesData.dishes.map((d) => ({ ...d, kind: 'food' }));
 const dishById = Object.fromEntries(DISHES.map((d) => [d.id, d]));
@@ -87,7 +87,9 @@ export function searchPlaces(query, { sort = 'healthy' } = {}) {
 
   // Packaged foods from our partner shops that match too
   const products = q
-    ? PRODUCTS.filter((p) => (!p.kind || p.kind === 'food') && matchText(q, p.nameEn, p.nameAr, ...(p.ingredients || [])))
+    ? PRODUCTS.filter(
+        (p) => (!p.kind || p.kind === 'food') && !containsAlcohol(p) && matchText(q, p.nameEn, p.nameAr, ...(p.ingredients || [])),
+      )
         .map((p) => ({ product: p, verdict: scoreProduct(p), shop: getShop(p.shopIds?.[0]) }))
         .sort((a, b) => TIER_RANK[a.verdict.tier] - TIER_RANK[b.verdict.tier])
         .slice(0, 4)
@@ -103,7 +105,7 @@ export function restaurantAlternatives(product) {
   if (!r) return [];
   const base = scoreProduct(product);
   return r.menu
-    .filter((m) => m.dish.id !== product.id && TIER_RANK[m.verdict.tier] < TIER_RANK[base.tier])
+    .filter((m) => m.dish.id !== product.id && !containsAlcohol(m.dish) && TIER_RANK[m.verdict.tier] < TIER_RANK[base.tier])
     .sort(
       (a, b) =>
         TIER_RANK[a.verdict.tier] - TIER_RANK[b.verdict.tier] ||

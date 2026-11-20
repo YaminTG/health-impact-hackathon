@@ -6,6 +6,19 @@ export const PRODUCTS = productsData.products;
 export const SHOPS = shopsData.shops;
 
 const byId = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
+
+// Never suggest or list anything containing alcohol (drinks or ingredients).
+// Whole words only, so "كبيرة" (big), "مخمر" (fermented) and "ginger" are not caught.
+const ALCOHOL_EN = /(^|[^a-z])(alcohol|ethanol|beer|wine|vodka|whiske?y|rum|gin|liqueur|arak)([^a-z]|$)/i;
+const ALCOHOL_AR = /(^|[^ء-ي])(?:وال|بال|ال|و|ب)?(كحول|بير[ةه]|نبيذ|خمر|مشروب روحي)(?:ي|يه|ية|ات)?([^ء-ي]|$)/;
+const ALCOHOL = { test: (s) => ALCOHOL_EN.test(s) || ALCOHOL_AR.test(s) };
+export function containsAlcohol(item) {
+  if (!item) return false;
+  const text = [item.nameEn, item.nameAr, item.productName, ...(item.ingredients || []), ...(item.ingredientsAr || []), item.ingredientsText]
+    .filter(Boolean)
+    .join(' | ');
+  return ALCOHOL.test(text);
+}
 export const getProduct = (id) => byId[id] || null;
 export const findByBarcode = (code) => {
   const c = String(code || '').replace(/\D/g, '');
@@ -54,7 +67,7 @@ export function getAlternatives(product) {
   return [...new Set(ids)]
     .filter((id) => id !== product.id)
     .map(getProduct)
-    .filter(Boolean)
+    .filter((alt) => alt && !containsAlcohol(alt))
     .map((alt) => ({ alt, verdict: scoreProduct(alt), reasons: swapReasons(product, alt) }))
     .filter(
       ({ verdict: v, reasons }) =>
