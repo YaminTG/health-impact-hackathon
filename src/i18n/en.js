@@ -72,6 +72,8 @@ const en = {
   'bc.cameraError': 'Could not start the camera. Use a photo or type the number.',
   'bc.offError': 'Could not reach Open Food Facts (offline?). Try the photo scan or a demo product.',
   'bc.tryPhoto': 'Try photo scan',
+  'update.ready': 'A new version is ready',
+  'update.now': 'Update',
   'unsupported.title': 'This product is not supported',
   'unsupported.text': 'This app does not analyse alcoholic drinks. Please scan another product.',
   'bc.helpTitle': 'Help others:',

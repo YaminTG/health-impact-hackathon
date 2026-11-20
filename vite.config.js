@@ -10,7 +10,9 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === 'https' && basicSsl(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': a new version waits in the background instead of taking over
+      // mid-session; src/lib/pwa.js applies it when the app is hidden or the user taps "Update".
+      registerType: 'prompt',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'favicon-64.png'],
       manifest: {
         name: 'Clean Nutrition – Bowel Health Jordan',

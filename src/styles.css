@@ -584,6 +584,26 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 .menu-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
 .route-loading { min-height: 60vh; display: grid; place-items: center; }
+.update-bar {
+  position: fixed;
+  z-index: 40;
+  inset-inline: 12px;
+  bottom: calc(var(--nav-h) + var(--safe-b) + 10px);
+  max-width: 536px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 14px;
+  padding-inline: 14px 6px;
+  border-radius: 14px;
+  background: #11302b;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  font-size: 0.92rem;
+}
+.update-bar span { flex: 1; }
+.update-bar .icon-btn { color: #fff; width: 36px; height: 36px; }
 .unsupported { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; color: var(--muted); }
 .unsupported h1 { font-size: 1.3rem; color: var(--text); }
 .unsupported p { color: var(--text); }

@@ -1,30 +1,42 @@
-// Keeps the installed PWA up to date without the user having to refresh.
-// - Checks for a new version on start, whenever the app comes back to the
-//   foreground, and every 30 minutes.
-// - When a new version is ready it reloads automatically, EXCEPT in the middle
-//   of a scan (camera / crop / OCR), where it waits until the user navigates.
+// Keeps the installed PWA up to date WITHOUT reloading while the user is using it.
+// - A new version downloads in the background and waits (old version keeps working).
+// - The user can tap "Update" in a small bar, or it is applied automatically the
+//   next time the app goes to the background (switch apps / lock phone), unless a
+//   scan is in progress.
+// - Checks for updates on start, when the app comes back to the foreground, and every 30 min.
 import { registerSW } from 'virtual:pwa-register';
 
-let pendingReload = false;
+let updateSW = null;
+let updateReady = false;
+const listeners = new Set();
 
 const isBusy = () => window.location.pathname.startsWith('/scan') && /[?&]mode=/.test(window.location.search);
 
-function reloadNow() {
-  pendingReload = false;
-  window.location.reload();
+function notify() {
+  listeners.forEach((fn) => fn(updateReady));
 }
 
-/** Call on every route change: applies a waiting update at a safe moment. */
-export function applyPendingUpdate() {
-  if (pendingReload && !isBusy()) reloadNow();
+/** Subscribe to "update ready" changes. Returns an unsubscribe function. */
+export function onUpdateReady(fn) {
+  listeners.add(fn);
+  fn(updateReady);
+  return () => listeners.delete(fn);
 }
+
+/** Apply the waiting version now (reloads the page). */
+export function applyUpdate() {
+  if (updateReady && updateSW) updateSW(true);
+}
+
+/** Kept for App.jsx compatibility: updates are no longer applied on navigation. */
+export function applyPendingUpdate() {}
 
 export function setupPwa() {
-  registerSW({
+  updateSW = registerSW({
     immediate: true,
-    onNeedReload() {
-      if (isBusy()) pendingReload = true;
-      else reloadNow();
+    onNeedRefresh() {
+      updateReady = true;
+      notify();
     },
     onRegisteredSW(_url, registration) {
       if (!registration) return;
@@ -35,9 +47,9 @@ export function setupPwa() {
       setInterval(check, 30 * 60 * 1000);
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') check();
-        else if (pendingReload) reloadNow(); // app went to background: safe to update
+        // app went to the background: apply a waiting update out of sight
+        else if (updateReady && !isBusy()) applyUpdate();
       });
-      window.addEventListener('focus', check);
     },
   });
 }

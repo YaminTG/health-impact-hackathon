@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { getProfile } from './lib/storage.js';
 import { applyPendingUpdate } from './lib/pwa.js';
+import UpdateBar from './components/UpdateBar.jsx';
 // Core demo path: loaded up front
 import Onboarding from './pages/Onboarding.jsx';
 import Home from './pages/Home.jsx';
@@ -44,6 +45,7 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
+      <UpdateBar />
       {needsOnboarding ? (
         <Navigate to="/onboarding" replace />
       ) : (
