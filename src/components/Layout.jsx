@@ -1,11 +1,13 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { House, ScanLine, HeartPulse, Info, Settings, ChevronLeft, ChevronRight, UtensilsCrossed } from 'lucide-react';
+import { House, ScanLine, HeartPulse, Info, Settings, ChevronLeft, ChevronRight, UtensilsCrossed, UserRound } from 'lucide-react';
+import { getProfile } from '../lib/storage.js';
 import { useI18n } from '../i18n/index.jsx';
 
 export function TopBar({ title, back }) {
   const { t, toggle, dir } = useI18n();
   const navigate = useNavigate();
   const BackIcon = dir === 'rtl' ? ChevronRight : ChevronLeft;
+  const initial = (getProfile()?.name || '').trim().charAt(0).toUpperCase();
   return (
     <header className="topbar">
       <div className="topbar-start">
@@ -25,6 +27,9 @@ export function TopBar({ title, back }) {
         <button className="lang-btn" onClick={toggle} aria-label="Language">
           {t('lang.toggle')}
         </button>
+        <Link to="/profile" className="icon-btn avatar-btn" aria-label={t('profile.title')}>
+          {initial ? <span className="avatar avatar-sm">{initial}</span> : <UserRound size={22} />}
+        </Link>
         <Link to="/settings" className="icon-btn" aria-label={t('nav.settings')}>
           <Settings size={22} />
         </Link>

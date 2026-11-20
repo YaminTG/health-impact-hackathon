@@ -7,19 +7,20 @@ import ScanRow from '../components/ProductRow.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { weeklyGutScore } from '../lib/gutScore.js';
 import { isScreeningEligible } from '../lib/eligibility.js';
-import { getScans } from '../lib/storage.js';
+import { getScans, getProfile } from '../lib/storage.js';
 
 export default function Home() {
   const { t, dir } = useI18n();
   const gut = weeklyGutScore();
   const eligible = isScreeningEligible();
   const recent = getScans().slice(0, 3);
+  const name = (getProfile()?.name || '').trim();
   const Chevron = dir === 'rtl' ? ChevronLeft : ChevronRight;
 
   return (
     <Page>
       <div className="greeting">
-        <h1>{t('home.hello')}</h1>
+        <h1>{name ? t('home.helloName', { name }) : t('home.hello')}</h1>
         <p className="muted">{t('home.subtitle')}</p>
       </div>
 

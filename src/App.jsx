@@ -19,6 +19,7 @@ const WarningSigns = lazy(() => import('./pages/WarningSigns.jsx'));
 const Dashboard = lazy(() => import('./pages/Dashboard.jsx'));
 const Places = lazy(() => import('./pages/Places.jsx'));
 const Place = lazy(() => import('./pages/Place.jsx'));
+const Profile = lazy(() => import('./pages/Profile.jsx'));
 
 function RouteLoading() {
   return (
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/places" element={<Places />} />
           <Route path="/places/:id" element={<Place />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </Suspense>

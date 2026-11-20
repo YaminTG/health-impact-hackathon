@@ -19,7 +19,8 @@ export function weekStart(now = Date.now()) {
 export function weeklyGutScore(scans = getScans(), now = Date.now()) {
   const start = weekStart(now);
   // Only food counts toward the Gut Score (cosmetics/household are excluded)
-  const week = scans.filter((s) => s.ts >= start && s.ts <= now + DAY && isFood(s.product));
+  const end = start + 7 * DAY; // midnight after `now`'s day
+  const week = scans.filter((s) => s.ts >= start && s.ts < end && isFood(s.product));
   let meatCount = 0;
   let sugarCount = 0;
   const fiberDaySet = new Set();
@@ -63,7 +64,16 @@ export function weeklyGutScore(scans = getScans(), now = Date.now()) {
   return { score, meatCount, fiberDays, sugarCount, scanCount: week.length, tip, days, scans: week };
 }
 
-export const scoreBand = (score) => (score >= 75 ? 'green' : score >= 50 ? 'amber' : 'red');
+/** Gut Score for each of the last `weeks` 7-day windows (oldest first). */
+export function weeklyHistory(weeks = 6, scans = getScans(), now = Date.now()) {
+  return Array.from({ length: weeks }, (_, i) => {
+    const end = now - (weeks - 1 - i) * 7 * DAY;
+    const w = weeklyGutScore(scans, end);
+    return { end, score: w.score, scanCount: w.scanCount, meatCount: w.meatCount, fiberDays: w.fiberDays };
+  });
+}
+
+export const scoreBand =(score) => (score >= 75 ? 'green' : score >= 50 ? 'amber' : 'red');
 
 /** Settings helper: seeds a realistic past week for demos. */
 export function seedSampleWeek() {

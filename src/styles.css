@@ -584,6 +584,42 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 .menu-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
 .route-loading { min-height: 60vh; display: grid; place-items: center; }
+
+/* ---------- profile ---------- */
+.avatar { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; font-weight: 700; font-size: 1.6rem; flex-shrink: 0; }
+.avatar-sm { width: 30px; height: 30px; font-size: 0.95rem; }
+.profile-head { display: flex; align-items: center; gap: 14px; }
+.profile-head-main { flex: 1; min-width: 0; }
+.profile-head-main h1 { font-size: 1.3rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tier-mini { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: var(--text); font-size: 1rem; padding: 6px 0; }
+.tier-mini .tier-dot { width: 10px; height: 10px; display: inline-block; }
+.profile-trend { height: 150px; }
+.band-bg-green { background: linear-gradient(180deg, #4ade80, #16a34a); }
+.band-bg-amber { background: linear-gradient(180deg, #fcd34d, #f59e0b); }
+.band-bg-red { background: linear-gradient(180deg, #f87171, var(--red)); }
+.band-text-green { color: var(--green); }
+.band-text-amber { color: var(--amber); }
+.band-text-red { color: var(--red); }
+.goal { display: flex; flex-direction: column; gap: 6px; }
+.goal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.goal-head > span { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.stepper { display: inline-flex; align-items: center; gap: 4px; background: var(--primary-50); border-radius: 12px; }
+.stepper .icon-btn { width: 36px; height: 36px; }
+.stepper strong { min-width: 1.5ch; text-align: center; }
+.progress-over > span { background: var(--red); }
+.bmi { font-size: 1.1rem; }
+.bmi-healthy { color: var(--green); }
+.bmi-under, .bmi-over { color: var(--amber); }
+.bmi-obese { color: var(--red); }
+.ok-text { color: var(--green); }
+.history-row { display: flex; align-items: center; gap: 4px; border-bottom: 1px solid var(--border); }
+.history-row:last-child { border-bottom: 0; }
+.history-row .scan-row { flex: 1; border-bottom: 0; min-width: 0; }
+.history-row .icon-btn { color: var(--muted); flex-shrink: 0; }
+.upto-date { display: flex; align-items: center; gap: 12px; color: var(--green); background: var(--green-bg); border-color: #bfe8cd; }
+.upto-date span { display: flex; flex-direction: column; color: var(--text); }
+.upto-date small { color: var(--muted); }
+.avatar-btn { padding: 0; }
 .update-bar {
   position: fixed;
   z-index: 40;

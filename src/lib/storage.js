@@ -28,8 +28,18 @@ function write(key, value) {
 }
 
 // ---- profile -------------------------------------------------------------
+// Profile fields: age, familyHistory, smoker (onboarding) + optional name, area,
+// heightCm, weightKg, goals { fiberDays, meatMax }, screening { date, type }.
 export const getProfile = () => read(KEYS.profile, null);
-export const saveProfile = (p) => write(KEYS.profile, { ...p, updatedAt: Date.now() });
+/** Merges with the existing profile, so re-running onboarding keeps name/goals/etc. */
+export const saveProfile = (patch) => {
+  const next = { ...(read(KEYS.profile, null) || {}), ...patch, updatedAt: Date.now() };
+  write(KEYS.profile, next);
+  return next;
+};
+
+export const DEFAULT_GOALS = { fiberDays: 5, meatMax: 2 };
+export const getGoals = (profile = getProfile()) => ({ ...DEFAULT_GOALS, ...(profile?.goals || {}) });
 
 // ---- settings ------------------------------------------------------------
 const DEFAULT_SETTINGS = { lang: 'ar', demoMode: false };
@@ -57,6 +67,28 @@ export function addScan(product, source, ts = Date.now()) {
   return scan;
 }
 export const clearScans = () => write(KEYS.scans, []);
+export const deleteScan = (id) => write(KEYS.scans, getScans().filter((s) => s.id !== id));
+
+/** Everything stored on this phone, as a downloadable JSON file. */
+export function exportData() {
+  const data = {
+    app: 'Clean Nutrition',
+    exportedAt: new Date().toISOString(),
+    profile: getProfile(),
+    settings: getSettings(),
+    scans: getScans(),
+    fitRequests: read(KEYS.fit, []),
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `clean-nutrition-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
 
 // ---- FIT kit requests (mock) ----------------------------------------------
 export const getFitRequests = () => read(KEYS.fit, []);
