@@ -1,20 +1,31 @@
-import { useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { getProfile } from './lib/storage.js';
 import { applyPendingUpdate } from './lib/pwa.js';
+// Core demo path: loaded up front
 import Onboarding from './pages/Onboarding.jsx';
 import Home from './pages/Home.jsx';
 import Scan from './pages/Scan.jsx';
 import Result from './pages/Result.jsx';
 import Alternatives from './pages/Alternatives.jsx';
 import GutScore from './pages/GutScore.jsx';
-import FitKit from './pages/FitKit.jsx';
-import About from './pages/About.jsx';
-import Settings from './pages/Settings.jsx';
-import WarningSigns from './pages/WarningSigns.jsx';
-import Dashboard from './pages/Dashboard.jsx';
-import Places from './pages/Places.jsx';
-import Place from './pages/Place.jsx';
+// Less-used screens: loaded on demand (smaller first download; all are still
+// precached by the service worker, so they work offline)
+const FitKit = lazy(() => import('./pages/FitKit.jsx'));
+const About = lazy(() => import('./pages/About.jsx'));
+const Settings = lazy(() => import('./pages/Settings.jsx'));
+const WarningSigns = lazy(() => import('./pages/WarningSigns.jsx'));
+const Dashboard = lazy(() => import('./pages/Dashboard.jsx'));
+const Places = lazy(() => import('./pages/Places.jsx'));
+const Place = lazy(() => import('./pages/Place.jsx'));
+
+function RouteLoading() {
+  return (
+    <div className="route-loading" role="status" aria-busy="true">
+      <div className="spinner" />
+    </div>
+  );
+}
 
 const OPEN_ROUTES = ['/onboarding', '/dashboard', '/about'];
 
@@ -36,6 +47,7 @@ export default function App() {
       {needsOnboarding ? (
         <Navigate to="/onboarding" replace />
       ) : (
+        <Suspense fallback={<RouteLoading />}>
         <Routes>
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/" element={<Home />} />
@@ -52,6 +64,7 @@ export default function App() {
           <Route path="/places/:id" element={<Place />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       )}
     </>
   );
