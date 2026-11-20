@@ -19,8 +19,11 @@ async function getWorker() {
   return workerPromise;
 }
 
-/** Downscale + greyscale big phone photos: faster and usually more accurate. */
-async function prepareImage(file, maxSide = 1800) {
+/**
+ * Crop (optional), downscale + greyscale big phone photos: faster and usually
+ * more accurate. crop = { x, y, w, h } as fractions (0..1) of the image.
+ */
+async function prepareImage(file, maxSide = 2000, crop = null) {
   const url = URL.createObjectURL(file);
   try {
     const img = await new Promise((resolve, reject) => {
@@ -29,14 +32,21 @@ async function prepareImage(file, maxSide = 1800) {
       i.onerror = () => reject(new Error('image-load'));
       i.src = url;
     });
-    const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
-    const w = Math.round(img.naturalWidth * scale);
-    const h = Math.round(img.naturalHeight * scale);
+    const c = crop || { x: 0, y: 0, w: 1, h: 1 };
+    const sx = Math.round(c.x * img.naturalWidth);
+    const sy = Math.round(c.y * img.naturalHeight);
+    const sw = Math.max(1, Math.round(c.w * img.naturalWidth));
+    const sh = Math.max(1, Math.round(c.h * img.naturalHeight));
+    // small crops are upscaled a little (Tesseract likes ~30px tall text)
+    const scale = Math.min(2, maxSide / Math.max(sw, sh));
+    const w = Math.round(sw * scale);
+    const h = Math.round(sh * scale);
     const canvas = document.createElement('canvas');
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    ctx.drawImage(img, 0, 0, w, h);
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
     const data = ctx.getImageData(0, 0, w, h);
     const px = data.data;
     for (let i = 0; i < px.length; i += 4) {
@@ -57,13 +67,13 @@ async function prepareImage(file, maxSide = 1800) {
  * @param {(p: {phase: 'loading'|'reading', pct: number}) => void} onProgress
  * @returns {Promise<string>} recognised text
  */
-export async function recognizeLabel(file, onProgress = () => {}) {
+export async function recognizeLabel(file, onProgress = () => {}, crop = null) {
   currentLogger = (m) => {
     if (m.status === 'recognizing text') onProgress({ phase: 'reading', pct: Math.round((m.progress || 0) * 100) });
     else onProgress({ phase: 'loading', pct: Math.round((m.progress || 0) * 100) });
   };
   onProgress({ phase: 'loading', pct: 0 });
-  const [worker, canvas] = await Promise.all([getWorker(), prepareImage(file)]);
+  const [worker, canvas] = await Promise.all([getWorker(), prepareImage(file, 2000, crop)]);
   const { data } = await worker.recognize(canvas);
   return (data?.text || '').trim();
 }

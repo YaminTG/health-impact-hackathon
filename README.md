@@ -99,6 +99,14 @@ Every non-food result states: *IARC classes describe hazard, not the risk at cos
 ```
 
 - **The keyword layer only extracts facts. It never decides risk.** The verdict comes from fixed rules in `src/lib/scoring.js`. Each rule carries an evidence tier and a source (WHO/IARC, WCRF/AICR).
+- **Photo flow, built for real packages:**
+  1. **Choose the type first** (Food / Cosmetics / Other). There is also "detect automatically"; if it isn't confident, it asks.
+  2. **Crop** a box around the ingredients. You can also choose "use whole photo".
+  3. **The ingredient section is found automatically** (`src/lib/labelText.js`). It keeps the text after "Ingredients:" / "المكونات:", in both languages, and stops at the nutrition table, storage, warnings, "produced by" and so on.
+     - Slogans like "made with whole grain!" are ignored.
+     - The nutrition table is still used, but only for the fibre and sugar numbers.
+  4. **The Arabic and English lists are kept separately.** The same ingredient in both languages counts once.
+  5. **Arabic matching works on whole words.** So "شعيرية" (vermicelli) is not "hair", "تلك" ("that") is not talc, and "may lead to" is not lead.
 - **Best-effort paths:** OCR and Open Food Facts depend on photo quality, internet access and database coverage.
   - The first OCR run downloads several MB of OCR engine and language data from a CDN (about 10 s); after that it is cached.
   - The OCR review screen lets you fix the text, and override the category before scoring.

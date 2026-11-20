@@ -30,7 +30,7 @@ export const DICTIONARY = {
 
   wholegrain: [
     'whole wheat', 'wholewheat', 'wholegrain', 'whole grain', 'wholemeal', 'whole meal', 'قمح كامل',
-    'حبوب كامله', 'طحين اسمر', 'خبز اسمر', 'oats', 'oat', 'شوفان', 'bran', 'نخاله', 'freekeh', 'فريكه',
+    'القمح الكامل', 'حبوب كامله', 'الحبوب الكامله', 'طحين اسمر', 'خبز اسمر', 'oats', 'oat', 'شوفان', 'bran', 'نخاله', 'freekeh', 'فريكه',
     'bulgur', 'برغل', 'brown rice', 'رز بني', 'barley', 'شعير', 'rye', 'جاودار',
   ],
 
@@ -55,11 +55,18 @@ export const DICTIONARY = {
     'غلوتامات', 'جلوتامات', 'e621', 'e627', 'e631', 'e635',
   ],
 
-  // Extra ultra-processing markers (count together with E-numbers)
+  // Extra ultra-processing markers (count together with E-numbers).
+  // Each inner array is ONE concept in both languages, so a bilingual label
+  // listing "maltodextrin" and "مالتودكسترين" counts once.
   upfMarkers: [
-    'maltodextrin', 'مالتودكسترين', 'hydrogenated', 'مهدرج', 'modified starch', 'نشا معدل',
-    'high fructose corn syrup', 'emulsifier', 'مستحلب', 'artificial flavour', 'artificial flavor',
-    'نكهه صناعيه', 'colour', 'color', 'ملون', 'soy protein isolate', 'protein isolate',
+    ['maltodextrin', 'مالتودكسترين', 'مالتوديكسترين'],
+    ['hydrogenated', 'مهدرج'],
+    ['modified starch', 'نشا معدل'],
+    ['high fructose corn syrup', 'شراب الذره عالي الفركتوز'],
+    ['emulsifier', 'مستحلب'],
+    ['artificial flavour', 'artificial flavor', 'نكهه صناعيه'],
+    ['colour', 'color', 'ملون'],
+    ['protein isolate', 'بروتين معزول'],
   ],
 
   dairy: [
@@ -83,34 +90,44 @@ export const DICTIONARY = {
 // =============================================================================
 export const CONCERNS = {
   mercury: ['mercury', 'mercurous chloride', 'mercuric', 'calomel', 'hydrargyrum', 'زئبق', 'كلوريد الزئبق'],
-  lead: ['lead', 'lead acetate', 'lead sulfide', 'lead sulphide', 'galena', 'plumbum', 'رصاص', 'كبريتيد الرصاص', 'اسيتات الرصاص'],
+  // bare "lead" only when it is not the verb ("may lead to irritation")
+  lead: [/(^|[^a-z])lead(?!\s+to\b)(?![a-z])/, 'lead acetate', 'lead sulfide', 'lead sulphide', 'galena', 'plumbum', 'رصاص', 'كبريتيد الرصاص', 'اسيتات الرصاص'],
   formaldehyde: ['formaldehyde', 'formalin', 'methylene glycol', 'methanediol', 'فورمالديهايد', 'فورمالدهيد', 'فورمالين'],
   formaldehyde_releaser: [
     'dmdm hydantoin', 'quaternium-15', 'imidazolidinyl urea', 'diazolidinyl urea', 'bronopol',
     '2-bromo-2-nitropropane-1,3-diol', 'sodium hydroxymethylglycinate', 'methenamine', 'polyoxymethylene urea',
     'برونوبول', 'دي ام دي ام هيدانتوين',
   ],
-  talc: ['talc', 'talcum', 'تلك', 'التلك', 'بودره التلك'],
+  // NOT bare "تلك" — it also means "that" in Arabic
+  talc: ['talc', 'talcum', 'التلك', 'بودره تلك', 'مسحوق التلك', 'تالك'],
   coal_tar: ['coal tar', 'pix lithanthracis', 'قطران الفحم'],
   hydroquinone: ['hydroquinone', 'هيدروكينون', 'هيدروكوينون'],
   banned_paraben: ['isopropylparaben', 'isobutylparaben', 'phenylparaben', 'benzylparaben', 'pentylparaben'],
 };
 
-// Words that suggest the label is a cosmetic / personal-care product.
-export const COSMETIC_HINTS = [
-  'aqua', 'glycerin', 'parfum', 'fragrance', 'cetearyl', 'cetyl alcohol', 'dimethicone', 'sodium laureth sulfate',
-  'sodium lauryl sulfate', 'cocamidopropyl', 'phenoxyethanol', 'tocopheryl', 'butylene glycol', 'petrolatum',
-  'paraben', 'ci 77', 'kohl', 'كحل', 'eyeliner', 'mascara', 'lipstick', 'shampoo', 'شامبو', 'conditioner', 'cream',
-  'كريم', 'lotion', 'لوشن', 'serum', 'سيروم', 'cosmetic', 'تجميل', 'for external use', 'للاستعمال الخارجي',
-  'skin', 'بشره', 'hair', 'شعر', 'talc', 'powder', 'بودره', 'deodorant', 'مزيل عرق', 'toothpaste', 'معجون اسنان',
-];
-
-// Words that suggest a household / cleaning / other non-food product.
-export const HOUSEHOLD_HINTS = [
-  'sodium hypochlorite', 'هيبوكلوريت', 'bleach', 'كلور', 'detergent', 'منظف', 'cleaner', 'disinfectant', 'معقم',
-  'surfactant', 'dishwashing', 'جلي', 'laundry', 'غسيل', 'air freshener', 'معطر جو', 'insecticide', 'مبيد',
-  'methylisothiazolinone', 'benzalkonium', 'do not swallow', 'لا تبتلع',
-];
+// Product-type detection: [weight, keywords]. Strong = only on that type of label.
+// Ambiguous words are deliberately left out ("cream" → ice cream, "powder" →
+// milk powder, "شعر" → شعيرية/vermicelli, "do not swallow" → toothpaste).
+export const KIND_HINTS = {
+  food: [
+    [3, ['nutrition', 'nutritional', 'kcal', 'kj', 'calories', 'carbohydrate', 'saturated', 'per 100 g', 'per 100g',
+      'القيمه الغذائيه', 'معلومات غذائيه', 'حقائق غذائيه', 'سعرات', 'كربوهيدرات', 'دهون مشبعه']],
+    [1, ['protein', 'بروتين', 'sugars', 'fibre', 'fiber', 'الياف', 'سكريات', 'flour', 'طحين', 'milk', 'حليب', 'oil', 'زيت', 'salt', 'ملح']],
+  ],
+  cosmetic: [
+    [3, ['aqua', 'parfum', 'ci 77', 'cetearyl', 'dimethicone', 'sodium laureth sulfate', 'sodium lauryl sulfate',
+      'cocamidopropyl', 'phenoxyethanol', 'butylene glycol', 'tocopheryl acetate', 'for external use', 'external use only',
+      'avoid contact with eyes', 'للاستعمال الخارجي', 'تجنب ملامسه العينين', 'مستحضر تجميل', 'cosmetic', 'mascara',
+      'eyeliner', 'lipstick', 'shampoo', 'شامبو', 'conditioner', 'deodorant', 'مزيل عرق', 'toothpaste', 'معجون اسنان',
+      'kohl', 'كحل', 'serum', 'سيروم', 'lotion', 'لوشن', 'sunscreen', 'واقي شمس', 'talc', 'talcum']],
+    [1, ['glycerin', 'fragrance', 'عطر', 'petrolatum', 'paraben', 'بشره', 'skin', 'hair', 'للشعر', 'كريم للبشره']],
+  ],
+  household: [
+    [3, ['sodium hypochlorite', 'هيبوكلوريت', 'bleach', 'كلور', 'detergent', 'منظف', 'disinfectant', 'dishwashing',
+      'سائل جلي', 'laundry', 'مسحوق غسيل', 'air freshener', 'معطر جو', 'insecticide', 'مبيد', 'cleaner']],
+    [1, ['surfactant', 'benzalkonium', 'methylisothiazolinone', 'surfaces', 'الاسطح']],
+  ],
+};
 
 // How many E-numbers (plus UPF markers) count as "many" -> ultra-processed.
 export const UPF_THRESHOLD = 3;

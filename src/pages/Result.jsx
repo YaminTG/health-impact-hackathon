@@ -44,7 +44,10 @@ export default function Result() {
   const alts = p.restaurantId ? restaurantAlternatives(p) : getAlternatives(p);
   const typeLabel = food ? t(`cat.${p.category}`) : t(`kind.${p.kind}`);
   const Arrow = dir === 'rtl' ? ArrowLeft : ArrowRight;
-  const ingredients = (lang === 'ar' && p.ingredientsAr?.length ? p.ingredientsAr : p.ingredients) || [];
+  // Show the list in the current language; fall back to the other one
+  const ingAr = p.ingredientsAr || [];
+  const ingEn = (p.ingredients || []).filter((i) => !ingAr.includes(i));
+  const ingredients = lang === 'ar' ? (ingAr.length ? ingAr : ingEn) : ingEn.length ? ingEn : ingAr;
   const yesNo = (b) => (b ? t('common.yes') : t('common.no'));
   const g = (n) => (n === null || n === undefined || n === '' ? t('res.fact.unknown') : `${n} ${t('unit.g')}`);
 
