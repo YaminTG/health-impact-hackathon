@@ -4,6 +4,7 @@ import { Page } from '../components/Layout.jsx';
 import ScreeningNudge from '../components/ScreeningNudge.jsx';
 import ScoreRing from '../components/ScoreRing.jsx';
 import ScanRow from '../components/ProductRow.jsx';
+import AdBanner from '../components/AdBanner.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { weeklyGutScore } from '../lib/gutScore.js';
 import { isScreeningEligible } from '../lib/eligibility.js';
@@ -66,6 +67,8 @@ export default function Home() {
       </Link>
 
       {eligible && <ScreeningNudge />}
+
+      <AdBanner placement="home" />
 
       <Link to="/warning-signs" className="card warn-link">
         <TriangleAlert size={24} />

@@ -20,6 +20,10 @@ const Dashboard = lazy(() => import('./pages/Dashboard.jsx'));
 const Places = lazy(() => import('./pages/Places.jsx'));
 const Place = lazy(() => import('./pages/Place.jsx'));
 const Profile = lazy(() => import('./pages/Profile.jsx'));
+const Premium = lazy(() => import('./pages/Premium.jsx'));
+const Family = lazy(() => import('./pages/Family.jsx'));
+const ShoppingList = lazy(() => import('./pages/ShoppingList.jsx'));
+const Advertise = lazy(() => import('./pages/Advertise.jsx'));
 
 function RouteLoading() {
   return (
@@ -66,6 +70,10 @@ export default function App() {
           <Route path="/places" element={<Places />} />
           <Route path="/places/:id" element={<Place />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/premium" element={<Premium />} />
+          <Route path="/family" element={<Family />} />
+          <Route path="/shopping-list" element={<ShoppingList />} />
+          <Route path="/advertise" element={<Advertise />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </Suspense>

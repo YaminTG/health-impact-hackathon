@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import ProductArt, { hasArt } from './ProductArt.jsx';
+
+const ART_SIZE = { lg: 128, md: 64, sm: 40 };
 
 /**
- * Real product photo (from Open Food/Beauty/Products Facts) when we have one,
- * otherwise the emoji. Falls back to the emoji if the image fails (e.g. offline).
+ * Real product photo (Open Food/Beauty/Products Facts) when we have one,
+ * else the drawn packaging for demo products, else the emoji.
  */
 export default function ProductImage({ product, size = 'lg', alt = '' }) {
   const [failed, setFailed] = useState(false);
@@ -20,6 +23,7 @@ export default function ProductImage({ product, size = 'lg', alt = '' }) {
       />
     );
   }
+  if (hasArt(product)) return <ProductArt product={product} size={ART_SIZE[size] || 64} className={`art-${size}`} />;
   return (
     <span className={size === 'lg' ? 'result-emoji' : 'scan-emoji'} aria-hidden="true">
       {product.emoji || '🛒'}

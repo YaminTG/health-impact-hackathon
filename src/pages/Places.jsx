@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Search, MapPin, X, Store, Leaf } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import ScoreRing from '../components/ScoreRing.jsx';
+import AdBanner from '../components/AdBanner.jsx';
 import RiskBadge, { TierDot } from '../components/RiskBadge.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { searchPlaces, placeBand } from '../lib/places.js';
@@ -158,6 +159,7 @@ export default function Places() {
         </section>
       )}
 
+      <AdBanner placement="places" />
       <p className="muted small">{t('places.note')}</p>
     </Page>
   );

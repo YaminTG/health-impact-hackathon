@@ -26,8 +26,8 @@ export default defineConfig(({ mode }) => ({
         display: 'standalone',
         display_override: ['fullscreen', 'standalone'],
         orientation: 'portrait',
-        theme_color: '#0F766E',
-        background_color: '#F6FBF9',
+        theme_color: '#13795B',
+        background_color: '#F6F5F0',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },

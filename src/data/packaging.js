@@ -1,0 +1,40 @@
+// Packaging style for each demo product (generic, no real brands).
+// shape: can | tin | tray | box | bag | canister | juicebox | pouch | jar | tub |
+//        bottle | pot | tube | pencil | shaker | spray
+// color = pack colour, label = label colour, ink = text colour, short = text on the pack
+export const PACKAGING = {
+  'luncheon-beef': { shape: 'can', color: '#b3261e', label: '#f6e7c8', ink: '#5b120e', shortEn: 'Luncheon', shortAr: 'لانشون' },
+  'mortadella-chicken': { shape: 'tray', color: '#e9a3a0', label: '#ffffff', ink: '#8a2a26', shortEn: 'Mortadella', shortAr: 'مرتديلا' },
+  'beef-sausages': { shape: 'box', color: '#1f4e8c', label: '#f3c74d', ink: '#1a2c4a', shortEn: 'Sausages', shortAr: 'نقانق' },
+  'minced-beef': { shape: 'tray', color: '#c0392b', label: '#ffffff', ink: '#7b1d14', shortEn: 'Minced beef', shortAr: 'لحم مفروم' },
+  'white-toast': { shape: 'bag', color: '#f2efe6', label: '#2f6fd0', ink: '#ffffff', shortEn: 'Toast', shortAr: 'توست' },
+  'wholewheat-bread': { shape: 'bag', color: '#c99a5b', label: '#2f6b3a', ink: '#ffffff', shortEn: 'Wholewheat', shortAr: 'قمح كامل' },
+  oats: { shape: 'canister', color: '#e8c872', label: '#2f6b3a', ink: '#ffffff', shortEn: 'Oats', shortAr: 'شوفان' },
+  'cola-soda': { shape: 'can', color: '#c8102e', label: '#c8102e', ink: '#ffffff', shortEn: 'Cola', shortAr: 'كولا' },
+  'juice-drink': { shape: 'juicebox', color: '#f39c12', label: '#fff4d6', ink: '#a14f00', shortEn: 'Orange', shortAr: 'برتقال' },
+  'potato-chips': { shape: 'pouch', color: '#f1c40f', label: '#c0392b', ink: '#ffffff', shortEn: 'Chips', shortAr: 'شيبس' },
+  'mixed-nuts': { shape: 'jar', color: '#a0522d', label: '#fdf3e1', ink: '#6b3410', shortEn: 'Mixed nuts', shortAr: 'مكسرات' },
+  'tuna-water': { shape: 'tin', color: '#2c7fb8', label: '#e9f4fb', ink: '#14476b', shortEn: 'Tuna', shortAr: 'تونة' },
+  'popcorn-plain': { shape: 'pouch', color: '#e74c3c', label: '#fff7e0', ink: '#a12a1d', shortEn: 'Popcorn', shortAr: 'فشار' },
+  labaneh: { shape: 'tub', color: '#ffffff', label: '#2e8b57', ink: '#ffffff', shortEn: 'Labaneh', shortAr: 'لبنة' },
+  'chickpeas-canned': { shape: 'can', color: '#d4a017', label: '#fff8e1', ink: '#6b4e00', shortEn: 'Chickpeas', shortAr: 'حمص' },
+  qudameh: { shape: 'pouch', color: '#b5651d', label: '#fdebd0', ink: '#6e3a0c', shortEn: 'Qudameh', shortAr: 'قضامة' },
+  'laban-drink': { shape: 'bottle', color: '#f7fbff', label: '#1f77b4', ink: '#ffffff', shortEn: 'Laban', shortAr: 'لبن' },
+  'sparkling-water': { shape: 'bottle', color: '#bfe6f5', label: '#0e6ba8', ink: '#ffffff', shortEn: 'Sparkling', shortAr: 'مياه فوارة' },
+  'chicken-breast': { shape: 'tray', color: '#f6d6c1', label: '#ffffff', ink: '#9a4b1f', shortEn: 'Chicken', shortAr: 'صدر دجاج' },
+  'red-lentils': { shape: 'pouch', color: '#e67e22', label: '#fff1e0', ink: '#8a4300', shortEn: 'Lentils', shortAr: 'عدس' },
+
+  'c-lightening-mercury': { shape: 'pot', color: '#f5d0e0', label: '#ffffff', ink: '#9b2d5c', shortEn: 'Whitening', shortAr: 'تفتيح' },
+  'c-lightening-hq': { shape: 'tube', color: '#fbe3ec', label: '#c2185b', ink: '#ffffff', shortEn: 'Lightening', shortAr: 'تفتيح' },
+  'c-moisturiser-spf': { shape: 'tube', color: '#e6f4f1', label: '#0f766e', ink: '#ffffff', shortEn: 'SPF 30', shortAr: 'مرطب' },
+  'c-kohl-lead': { shape: 'pot', color: '#3a3a3a', label: '#c9a227', ink: '#1a1a1a', shortEn: 'Kohl', shortAr: 'كحل' },
+  'c-kohl-safe': { shape: 'pencil', color: '#2b2b2b', label: '#7fd1c1', ink: '#103b35', shortEn: 'Kohl', shortAr: 'كحل' },
+  'c-talc': { shape: 'shaker', color: '#dff1fb', label: '#5aa9e6', ink: '#ffffff', shortEn: 'Talc', shortAr: 'بودرة' },
+  'c-cornstarch': { shape: 'shaker', color: '#fff6d6', label: '#e2a400', ink: '#ffffff', shortEn: 'Cornstarch', shortAr: 'نشا' },
+  'c-keratin-formaldehyde': { shape: 'bottle', color: '#3b2f2f', label: '#d4af37', ink: '#2a1f1f', shortEn: 'Keratin', shortAr: 'كيراتين' },
+  'c-argan-mask': { shape: 'tub', color: '#f3e2c7', label: '#8d5524', ink: '#ffffff', shortEn: 'Argan', shortAr: 'أرغان' },
+  'c-shampoo-dmdm': { shape: 'bottle', color: '#2e86de', label: '#ffffff', ink: '#1b4f85', shortEn: 'Shampoo', shortAr: 'شامبو' },
+  'c-shampoo-gentle': { shape: 'bottle', color: '#a3d9a5', label: '#ffffff', ink: '#2e7d32', shortEn: 'Gentle', shortAr: 'شامبو' },
+  'h-cleaner-bronopol': { shape: 'spray', color: '#8e44ad', label: '#ffffff', ink: '#5b2c6f', shortEn: 'Cleaner', shortAr: 'منظف' },
+  'h-cleaner-vinegar': { shape: 'spray', color: '#f4d03f', label: '#ffffff', ink: '#7d6608', shortEn: 'Vinegar', shortAr: 'خل' },
+};

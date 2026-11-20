@@ -6,7 +6,48 @@ const KEYS = {
   scans: 'cn.scans',
   fit: 'cn.fitRequests',
   offCache: 'cn.offCache',
+  premium: 'cn.premium',
+  family: 'cn.family',
+  shopping: 'cn.shopping',
 };
+
+// ---- premium (demo subscription: no payment is taken) ---------------------
+export const getPremium = () => read(KEYS.premium, { active: false });
+export const isPremium = () => !!getPremium().active;
+export function startPremium(plan = 'monthly') {
+  const p = { active: true, plan, since: Date.now(), trialEnds: Date.now() + 7 * 24 * 60 * 60 * 1000 };
+  write(KEYS.premium, p);
+  return p;
+}
+export const cancelPremium = () => write(KEYS.premium, { active: false });
+
+// ---- family members (premium) ---------------------------------------------
+export const getFamily = () => read(KEYS.family, []);
+export function saveFamilyMember(m) {
+  const list = getFamily();
+  const member = { id: m.id || `f${Date.now().toString(36)}`, ...m };
+  const i = list.findIndex((x) => x.id === member.id);
+  if (i >= 0) list[i] = member;
+  else list.push(member);
+  write(KEYS.family, list);
+  return member;
+}
+export const deleteFamilyMember = (id) => write(KEYS.family, getFamily().filter((m) => m.id !== id));
+
+// ---- shopping list (premium) ----------------------------------------------
+export const getShopping = () => read(KEYS.shopping, []);
+export function addToShopping(item) {
+  const list = getShopping();
+  if (!list.some((x) => x.productId === item.productId)) {
+    list.push({ ...item, done: false, ts: Date.now() });
+    write(KEYS.shopping, list);
+  }
+  return list;
+}
+export const toggleShopping = (productId) =>
+  write(KEYS.shopping, getShopping().map((x) => (x.productId === productId ? { ...x, done: !x.done } : x)));
+export const removeShopping = (productId) => write(KEYS.shopping, getShopping().filter((x) => x.productId !== productId));
+export const clearShoppingDone = () => write(KEYS.shopping, getShopping().filter((x) => !x.done));
 
 const memory = {};
 
@@ -78,6 +119,8 @@ export function exportData() {
     settings: getSettings(),
     scans: getScans(),
     fitRequests: read(KEYS.fit, []),
+    family: getFamily(),
+    shoppingList: getShopping(),
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);

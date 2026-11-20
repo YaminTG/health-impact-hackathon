@@ -1,4 +1,8 @@
-import { Beef, Wheat, CupSoda, Lightbulb } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Beef, Wheat, CupSoda, Lightbulb, FileBarChart } from 'lucide-react';
+import { PremiumBadge } from '../components/PremiumLock.jsx';
+import { isPremium } from '../lib/storage.js';
+import { shareText } from '../lib/share.js';
 import { Page } from '../components/Layout.jsx';
 import ScoreRing from '../components/ScoreRing.jsx';
 import ScreeningNudge from '../components/ScreeningNudge.jsx';
@@ -64,6 +68,24 @@ export default function GutScore() {
       </section>
 
       <p className="muted small">{t('gut.how')}</p>
+
+      {isPremium() ? (
+        <button
+          className="btn btn-secondary btn-block"
+          onClick={() =>
+            shareText({
+              title: t('gut.title'),
+              text: t('report.text', { score: gut.score, meat: gut.meatCount, fiber: gut.fiberDays, tip: t(gut.tip) }),
+            })
+          }
+        >
+          <FileBarChart size={18} /> {t('report.share')}
+        </button>
+      ) : (
+        <Link to="/premium" className="btn btn-ghost btn-block">
+          <FileBarChart size={18} /> {t('report.share')} <PremiumBadge />
+        </Link>
+      )}
 
       {isScreeningEligible() && <ScreeningNudge />}
 

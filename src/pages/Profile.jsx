@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   UserRound, Pencil, Save, X, Download, Trash2, Wheat, Beef, CalendarCheck, Stethoscope, Scale, Minus, Plus,
-  ScanLine, Settings as SettingsIcon,
+  ScanLine, Settings as SettingsIcon, Crown, Users, ShoppingBasket,
 } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import ScanRow from '../components/ProductRow.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import {
-  getProfile, saveProfile, getGoals, getScans, deleteScan, getFitRequests, exportData,
+  getProfile, saveProfile, getGoals, getScans, deleteScan, getFitRequests, exportData, isPremium,
 } from '../lib/storage.js';
 import { weeklyGutScore, weeklyHistory, scoreBand } from '../lib/gutScore.js';
 import { scoreProduct, isFood } from '../lib/scoring.js';
@@ -151,6 +151,26 @@ export default function Profile() {
         )}
       </section>
       {saved && <p className="toast-inline">{saved}</p>}
+
+      {/* ---------- premium ---------- */}
+      {isPremium() ? (
+        <section className="card premium-mini">
+          <Crown size={20} />
+          <span className="premium-mini-main">
+            <strong>{t('premium.member')}</strong>
+          </span>
+          <Link to="/family" className="btn btn-sm btn-secondary"><Users size={16} /> {t('premium.f.family')}</Link>
+          <Link to="/shopping-list" className="btn btn-sm btn-secondary"><ShoppingBasket size={16} /></Link>
+        </section>
+      ) : (
+        <Link to="/premium" className="card premium-mini premium-upsell">
+          <Crown size={22} />
+          <span className="premium-mini-main">
+            <strong>{t('premium.upsellTitle')}</strong>
+            <small>{t('premium.upsellText')}</small>
+          </span>
+        </Link>
+      )}
 
       {/* ---------- edit info ---------- */}
       {editing && (

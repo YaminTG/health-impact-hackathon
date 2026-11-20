@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Camera, ScanBarcode, Ban, ScanLine } from 'lucide-react';
 import { isBlockedProduct } from '../lib/alcohol.js';
+import ProductImage from '../components/ProductImage.jsx';
 import { Page } from '../components/Layout.jsx';
 import { TierDot } from '../components/RiskBadge.jsx';
 import BarcodeScanner from '../components/BarcodeScanner.jsx';
@@ -98,7 +99,7 @@ export default function Scan() {
         <div className="demo-grid">
           {demoProducts.map((p) => (
             <button key={p.id} className="demo-tile" onClick={() => pickDemo(p)} disabled={busy}>
-              <span className="demo-emoji">{p.emoji}</span>
+              <ProductImage product={p} size="md" />
               <span className="demo-name">{pick(p)}</span>
               <TierDot tier={scoreProduct(p).tier} />
             </button>

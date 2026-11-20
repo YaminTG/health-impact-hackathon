@@ -1,12 +1,15 @@
-import { useParams } from 'react-router-dom';
-import { MapPin, Store, Check } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { MapPin, Store, Check, ListPlus, ShoppingBasket } from 'lucide-react';
+import AdBanner from '../components/AdBanner.jsx';
+import { PremiumBadge } from '../components/PremiumLock.jsx';
 import { Page } from '../components/Layout.jsx';
 import RiskBadge from '../components/RiskBadge.jsx';
 import Disclaimer from '../components/Disclaimer.jsx';
 import { productName } from '../components/ProductRow.jsx';
 import ProductImage from '../components/ProductImage.jsx';
 import { useI18n } from '../i18n/index.jsx';
-import { getScan } from '../lib/storage.js';
+import { getScan, isPremium, getShopping, addToShopping } from '../lib/storage.js';
 import { getAlternatives } from '../lib/catalog.js';
 import { restaurantAlternatives } from '../lib/places.js';
 import { swapReasons } from '../lib/scoring.js';
@@ -15,6 +18,7 @@ export default function Alternatives() {
   const { id } = useParams();
   const { t, pick } = useI18n();
   const scan = getScan(id);
+  const [inList, setInList] = useState(() => new Set(getShopping().map((x) => x.productId)));
   if (!scan) return <Page title={t('alt.title')} back><p>{t('res.notFound')}</p></Page>;
 
   const p = scan.product;
@@ -22,6 +26,7 @@ export default function Alternatives() {
     ? restaurantAlternatives(p).map((x) => ({ ...x, reasons: swapReasons(p, x.alt) }))
     : getAlternatives(p);
   const price = (n) => (n ? `≈ ${n.toFixed(2)} ${t('common.jod')}` : '');
+  const premium = isPremium();
 
   return (
     <Page title={t('alt.title')} back>
@@ -36,7 +41,9 @@ export default function Alternatives() {
         {alts.map(({ alt, verdict, reasons, shop }) => (
           <article key={alt.id} className="card alt-card">
             <div className="alt-head">
-              <span className="alt-emoji">{alt.emoji}</span>
+              <span className="alt-emoji">
+                <ProductImage product={alt} size="md" />
+              </span>
               <div>
                 <h2>{pick(alt)}</h2>
                 <small className="muted">
@@ -62,10 +69,34 @@ export default function Alternatives() {
                 <MapPin size={14} /> {t('alt.away', { d: shop.distanceKm })}
               </span>
             </div>
+            {!p.restaurantId &&
+              (premium ? (
+                <button
+                  className={`btn btn-sm ${inList.has(alt.id) ? 'btn-ghost' : 'btn-secondary'}`}
+                  disabled={inList.has(alt.id)}
+                  onClick={() => {
+                    addToShopping({ productId: alt.id });
+                    setInList(new Set(getShopping().map((x) => x.productId)));
+                  }}
+                >
+                  {inList.has(alt.id) ? <><Check size={16} /> {t('shop.added')}</> : <><ListPlus size={16} /> {t('shop.add')}</>}
+                </button>
+              ) : (
+                <Link to="/premium" className="btn btn-sm btn-ghost">
+                  <ListPlus size={16} /> {t('shop.add')} <PremiumBadge />
+                </Link>
+              ))}
           </article>
         ))}
       </div>
 
+      {premium && inList.size > 0 && (
+        <Link to="/shopping-list" className="btn btn-primary btn-block">
+          <ShoppingBasket size={18} /> {t('shop.open', { n: inList.size })}
+        </Link>
+      )}
+
+      <AdBanner placement="alternatives" />
       <p className="muted small">{t('alt.priceNote')}</p>
       <Disclaimer />
     </Page>
