@@ -44,6 +44,16 @@ export default defineConfig(({ mode }) => ({
             options: { cacheName: 'google-fonts', expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 365 } },
           },
           {
+            // Product photos from Open Food / Beauty / Products Facts
+            urlPattern: /^https:\/\/[a-z.]*open(food|beauty|products)facts\.org\/images\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'product-images',
+              expiration: { maxEntries: 150, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
             // Tesseract worker/core/language data from CDNs
             urlPattern: /^https:\/\/(cdn\.jsdelivr\.net|unpkg\.com|tessdata\.projectnaptha\.com)\/.*/i,
             handler: 'CacheFirst',

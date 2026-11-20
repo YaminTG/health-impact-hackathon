@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Camera, CameraOff, Search, TriangleAlert, ScanText, Image as ImageIcon } from 'lucide-react';
+import { Camera, CameraOff, Search, TriangleAlert, ScanText, Image as ImageIcon, ExternalLink } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
 import { findByBarcode } from '../lib/catalog.js';
-import { lookupBarcodeOnline } from '../lib/openFoodFacts.js';
+import { lookupBarcodeOnline, contributeUrl, OFF_APP_URL } from '../lib/openFoodFacts.js';
 
 let readerPromise = null;
 /** Lazy-load ZXing (keeps the main bundle small). */
@@ -149,6 +149,22 @@ export default function BarcodeScanner({ onFound, onTryPhoto }) {
           <button className="btn btn-primary btn-block" onClick={onTryPhoto}>
             <ScanText size={18} /> {t('bc.tryPhoto')}
           </button>
+          <div className="contribute">
+            <p className="small">
+              <strong>{t('bc.helpTitle')}</strong> {t('bc.helpText')}
+            </p>
+            <div className="row">
+              <a className="btn btn-secondary btn-grow btn-sm" href={contributeUrl(code, 'food')} target="_blank" rel="noopener noreferrer">
+                <ExternalLink size={16} /> {t('bc.addFood')}
+              </a>
+              <a className="btn btn-secondary btn-grow btn-sm" href={contributeUrl(code, 'cosmetic')} target="_blank" rel="noopener noreferrer">
+                <ExternalLink size={16} /> {t('bc.addBeauty')}
+              </a>
+            </div>
+            <a className="small link-more" href={OFF_APP_URL} target="_blank" rel="noopener noreferrer">
+              {t('bc.getApp')}
+            </a>
+          </div>
         </div>
       )}
 

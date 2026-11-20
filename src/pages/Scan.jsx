@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Camera, ScanBarcode } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import { TierDot } from '../components/RiskBadge.jsx';
@@ -14,7 +14,9 @@ import { addScan } from '../lib/storage.js';
 export default function Scan() {
   const { t, pick } = useI18n();
   const navigate = useNavigate();
-  const [mode, setMode] = useState('menu'); // menu | barcode | photo
+  const [params] = useSearchParams();
+  // /scan?mode=photo or /scan?mode=barcode opens that path directly
+  const [mode, setMode] = useState(() => (['photo', 'barcode'].includes(params.get('mode')) ? params.get('mode') : 'menu'));
   const [busy, setBusy] = useState(false);
   const [demoKind, setDemoKind] = useState('food');
   const demoProducts = PRODUCTS.filter((p) => (p.kind || 'food') === demoKind);

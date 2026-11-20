@@ -1,10 +1,12 @@
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, ScanLine } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ScanLine, Camera, ExternalLink } from 'lucide-react';
+import { contributeUrl } from '../lib/openFoodFacts.js';
 import { Page } from '../components/Layout.jsx';
 import RiskBadge from '../components/RiskBadge.jsx';
 import Disclaimer from '../components/Disclaimer.jsx';
 import ScreeningNudge from '../components/ScreeningNudge.jsx';
 import { productName } from '../components/ProductRow.jsx';
+import ProductImage from '../components/ProductImage.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { getScan } from '../lib/storage.js';
 import { scoreProduct, isFood } from '../lib/scoring.js';
@@ -54,8 +56,9 @@ export default function Result() {
   return (
     <Page title={t('res.title')} back>
       <section className={`result-hero tier-bg-${v.tier}`}>
-        <span className="result-emoji">{p.emoji || '🛒'}</span>
+        <ProductImage product={p} alt={productName(p, pick, t)} />
         <h1 className="result-name">{productName(p, pick, t)}</h1>
+        {p.brand && <p className="muted small result-brand">{p.brand}</p>}
         <p className="muted small">
           {typeLabel} · {t(`res.source.${scan.source}`)}
         </p>
@@ -65,7 +68,25 @@ export default function Result() {
         {!food && <p className="muted small">{t('res.hazardNote')}</p>}
       </section>
 
-      {alts.length > 0 && (
+      {v.unknown && (
+        <section className="card section">
+          <Link to="/scan?mode=photo" className="btn btn-primary btn-block btn-lg">
+            <Camera size={20} /> {t('res.scanLabel')}
+          </Link>
+          {p.barcode && (
+            <a
+              className="btn btn-secondary btn-block"
+              href={contributeUrl(p.barcode, p.kind === 'cosmetic' ? 'cosmetic' : 'food')}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ExternalLink size={18} /> {t('res.completeProduct')}
+            </a>
+          )}
+        </section>
+      )}
+
+      {alts.length > 0 && !v.unknown && (
         <Link to={`/alternatives/${scan.id}`} className="btn btn-primary btn-block btn-lg">
           {t('res.alternatives')} <Arrow size={20} />
         </Link>

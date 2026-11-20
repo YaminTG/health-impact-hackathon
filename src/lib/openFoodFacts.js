@@ -15,7 +15,27 @@ const FIELDS = [
   'product_name', 'product_name_en', 'product_name_ar', 'brands',
   'ingredients_text', 'ingredients_text_en', 'ingredients_text_ar',
   'categories_tags', 'additives_tags', 'nova_group', 'nutriments',
+  'image_front_small_url', 'image_front_url', 'image_small_url', 'image_url',
 ].join(',');
+
+// Bump when the mapped product shape changes so old cached lookups are refetched.
+const CACHE_VERSION = 3;
+
+/** Public page where anyone can view/complete/add a product (no sign-in needed to view). */
+export function contributeUrl(barcode, kind = 'food') {
+  const code = String(barcode || '').replace(/\D/g, '');
+  const host = kind === 'cosmetic' ? 'https://world.openbeautyfacts.org' : 'https://world.openfoodfacts.org';
+  return `${host}/product/${code}`;
+}
+export const OFF_APP_URL = 'https://world.openfoodfacts.org/open-food-facts-mobile-app';
+
+function images(p) {
+  const small = p.image_front_small_url || p.image_small_url || p.image_front_url || p.image_url || '';
+  const large = p.image_front_url || p.image_url || small;
+  // only accept https images from the Open Food Facts family
+  const ok = (u) => (/^https:\/\/[a-z.]*open(food|beauty|products)facts\.org\//.test(u) ? u : '');
+  return { imageUrl: ok(small), imageLargeUrl: ok(large) };
+}
 
 async function fetchProduct(host, code, timeoutMs) {
   const url = `${host}/api/v2/product/${code}.json?fields=${FIELDS}&app_name=CleanNutritionJO-Hackathon&app_version=0.2`;
@@ -36,16 +56,18 @@ export async function lookupBarcodeOnline(barcode, { timeoutMs = 8000 } = {}) {
   const code = String(barcode).replace(/\D/g, '');
   if (!code) return null;
   const cached = getOffCache(code);
-  if (cached?.product) return cached;
+  if (cached?.product && cached.v === CACHE_VERSION) return cached;
 
   let reachable = false;
   for (const db of DATABASES) {
     try {
       const raw = await fetchProduct(db.host, code, timeoutMs);
       reachable = true;
+      // Empty placeholder entries (no name, no ingredients, no category) = not found
+      if (raw && isStub(raw)) continue;
       if (raw) {
         const product = db.kind === 'food' ? mapOffProduct(raw, code) : mapNonFoodProduct(raw, code, db.kind);
-        const hit = { product, source: db.source };
+        const hit = { product, source: db.source, v: CACHE_VERSION };
         setOffCache(code, hit);
         return hit;
       }
@@ -65,6 +87,13 @@ export async function lookupBarcodeOnline(barcode, { timeoutMs = 8000 } = {}) {
 export async function lookupOpenFoodFacts(barcode) {
   const hit = await lookupBarcodeOnline(barcode);
   return hit?.source === 'off' ? hit.product : null;
+}
+
+const hasIngredients = (p) => !!(p.ingredients_text || p.ingredients_text_en || p.ingredients_text_ar);
+const hasName = (p) => !!(p.product_name || p.product_name_en || p.product_name_ar);
+const usefulCategories = (p) => (p.categories_tags || []).filter((t) => !/^en:(unknown|undefined)/.test(t)).length > 0;
+function isStub(p) {
+  return !hasName(p) && !hasIngredients(p) && !usefulCategories(p);
 }
 
 function names(p) {
@@ -106,6 +135,9 @@ export function mapOffProduct(p, code) {
     brand: p.brands || '',
     ingredients: ingredients.length ? ingredients : rest.ingredients,
     novaGroup: Number(p.nova_group) || null,
+    // nothing to judge: no ingredient list and no category that our rules understand
+    dataIncomplete: !hasIngredients(p) && rest.category === 'other' && !p.nova_group,
+    ...images(p),
   };
 }
 
@@ -121,5 +153,6 @@ export function mapNonFoodProduct(p, code, kind) {
     barcode: code,
     brand: p.brands || '',
     ingredients: splitList(ingredientsText),
+    ...images(p),
   };
 }

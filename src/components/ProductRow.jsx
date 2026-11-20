@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n/index.jsx';
 import { scoreProduct, isFood } from '../lib/scoring.js';
 import { TierDot } from './RiskBadge.jsx';
+import ProductImage from './ProductImage.jsx';
 
 export function productName(product, pick, t) {
   return pick(product) || product.productName || t('ocr.defaultName');
@@ -17,7 +18,7 @@ export default function ScanRow({ scan }) {
   });
   return (
     <Link to={`/result/${scan.id}`} className="scan-row">
-      <span className="scan-emoji">{scan.product.emoji || '🛒'}</span>
+      <ProductImage product={scan.product} size="sm" />
       <span className="scan-row-main">
         <strong>{productName(scan.product, pick, t)}</strong>
         <small>

@@ -4,6 +4,7 @@ import { Page } from '../components/Layout.jsx';
 import RiskBadge from '../components/RiskBadge.jsx';
 import Disclaimer from '../components/Disclaimer.jsx';
 import { productName } from '../components/ProductRow.jsx';
+import ProductImage from '../components/ProductImage.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { getScan } from '../lib/storage.js';
 import { getAlternatives } from '../lib/catalog.js';
@@ -25,7 +26,7 @@ export default function Alternatives() {
   return (
     <Page title={t('alt.title')} back>
       <p className="alt-for">
-        <span>{p.emoji || '🛒'}</span> {t('alt.for', { name: productName(p, pick, t) })}
+        <ProductImage product={p} size="sm" /> {t('alt.for', { name: productName(p, pick, t) })}
         {p.approxPriceJOD ? <small className="muted"> · {price(p.approxPriceJOD)}</small> : null}
       </p>
 

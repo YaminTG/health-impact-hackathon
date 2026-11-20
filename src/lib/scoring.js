@@ -100,6 +100,8 @@ export const CONCERN_RULES = [
   { id: 'banned_paraben', tier: 'amber', evidence: 'euBanned', sourceKey: 'eu_parabens' },
 ];
 const NO_CONCERN_RULE = { id: 'no_concerns', tier: 'green', evidence: 'none', sourceKey: 'concern_lists' };
+const NO_INGREDIENTS_RULE = { id: 'no_ingredients', tier: 'green', evidence: 'none', sourceKey: 'balanced' };
+const NO_INGREDIENTS_NONFOOD = { ...NO_INGREDIENTS_RULE, sourceKey: 'concern_lists' };
 
 export const isFood = (p) => !p?.kind || p.kind === 'food';
 
@@ -108,13 +110,11 @@ function ingredientText(p) {
   return stripFreeClaims(normalize(parts.join(', ')));
 }
 
-const NO_INGREDIENTS_RULE = { id: 'no_ingredients', tier: 'green', evidence: 'none', sourceKey: 'concern_lists' };
-
 function scoreNonFood(p) {
   const text = ingredientText(p);
   // Nothing to check: say so instead of implying the product is fine.
   if (text.replace(/[\s,]/g, '').length < 3) {
-    return { kind: p.kind, tier: 'green', unknown: true, protective: false, rules: [NO_INGREDIENTS_RULE], primary: NO_INGREDIENTS_RULE, staple: false };
+    return { kind: p.kind, tier: 'green', unknown: true, protective: false, rules: [NO_INGREDIENTS_NONFOOD], primary: NO_INGREDIENTS_NONFOOD, staple: false };
   }
   const matched = CONCERN_RULES.filter((r) => containsAny(text, CONCERNS[r.id] || []));
   let tier = 'green';
@@ -126,6 +126,10 @@ function scoreNonFood(p) {
 export function scoreProduct(product) {
   const p = product || {};
   if (!isFood(p)) return scoreNonFood(p);
+  // Database entry without ingredients or a usable category: say we couldn't check
+  if (p.dataIncomplete) {
+    return { kind: 'food', tier: 'green', unknown: true, protective: false, rules: [NO_INGREDIENTS_RULE], primary: NO_INGREDIENTS_RULE, staple: false };
+  }
   const staple = isStaple(p);
   const ctx = { staple, plainDairy: staple && p.category === 'dairy' };
   const matched = RULES.filter((r) => r.test(p, ctx)).map(({ test, ...r }) => r);

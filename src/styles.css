@@ -583,6 +583,13 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 .menu-row { display: flex; align-items: center; gap: 10px; }
 .menu-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
+/* ---------- product photos / contribute ---------- */
+.product-img { display: block; object-fit: contain; background: #fff; border-radius: 14px; border: 1px solid var(--border); }
+.product-img-lg { width: 120px; height: 120px; padding: 6px; }
+.product-img-sm { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; }
+.result-brand { margin-top: -4px; }
+.contribute { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; padding-top: 12px; border-top: 1px dashed var(--border); text-align: start; }
+
 /* ---------- photo flow: kind choice + crop ---------- */
 .kind-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .kind-tile {
