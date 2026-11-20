@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Camera, ScanBarcode } from 'lucide-react';
+import { Camera, ScanBarcode, Ban, ScanLine } from 'lucide-react';
+import { isBlockedProduct } from '../lib/alcohol.js';
 import { Page } from '../components/Layout.jsx';
 import { TierDot } from '../components/RiskBadge.jsx';
 import BarcodeScanner from '../components/BarcodeScanner.jsx';
@@ -19,12 +20,18 @@ export default function Scan() {
   // back button and the bottom "Scan" tab always work without a page refresh.
   const mode = ['photo', 'barcode'].includes(params.get('mode')) ? params.get('mode') : 'menu';
   const setMode = (m) => setParams(m === 'menu' ? {} : { mode: m });
+  const blocked = params.get('unsupported') === '1';
   const [busy, setBusy] = useState(false);
   const [demoKind, setDemoKind] = useState('food');
   const demoProducts = PRODUCTS.filter((p) => (p.kind || 'food') === demoKind);
 
   /** Every scan path ends here: save to history and show the result. */
   function finish(product, source) {
+    // Alcoholic drinks are not supported: nothing is analysed, saved or suggested.
+    if (isBlockedProduct(product)) {
+      setParams({ unsupported: '1' }, { replace: true });
+      return;
+    }
     const scan = addScan(product, source);
     navigate(`/result/${scan.id}`);
   }
@@ -34,6 +41,20 @@ export default function Scan() {
     // short pause so the demo feels like a real scan
     setTimeout(() => finish(p, 'demo'), 450);
   }
+
+  if (blocked)
+    return (
+      <Page title={t('scan.title')} back>
+        <section className="card unsupported" role="alert">
+          <Ban size={44} />
+          <h1>{t('unsupported.title')}</h1>
+          <p>{t('unsupported.text')}</p>
+          <button className="btn btn-primary btn-block btn-lg" onClick={() => setMode('menu')}>
+            <ScanLine size={18} /> {t('res.scanAnother')}
+          </button>
+        </section>
+      </Page>
+    );
 
   if (mode === 'barcode')
     return (

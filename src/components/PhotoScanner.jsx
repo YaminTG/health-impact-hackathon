@@ -5,6 +5,7 @@ import { recognizeLabel } from '../lib/ocr.js';
 import { classify, classifyNonFood, detectKindDetailed, CATEGORIES, KINDS, emojiFor } from '../lib/classify.js';
 import { extractIngredientSections, cleanDisplay } from '../lib/labelText.js';
 import { scoreProduct } from '../lib/scoring.js';
+import { isAlcoholicText } from '../lib/alcohol.js';
 import RiskBadge from './RiskBadge.jsx';
 import CropBox from './CropBox.jsx';
 
@@ -89,6 +90,8 @@ export default function PhotoScanner({ onDone, initialKind = '' }) {
     const cleanName = name.trim() || t('ocr.defaultName');
     const p = { ...draft.product };
     p.productName = p.productNameAr = p.nameEn = p.nameAr = cleanName;
+    // alcoholic drinks are not supported (checked on the whole label, e.g. "5% vol")
+    if (kind === 'food') p.alcoholic = isAlcoholicText(`${fullText}\n${text}\n${name}`);
     onDone(p);
   }
 

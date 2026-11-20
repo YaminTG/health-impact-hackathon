@@ -4,6 +4,7 @@
 // Browsers do not allow setting User-Agent, so we identify via `app_name`.
 import { classify, classifyNonFood, detectKind } from './classify.js';
 import { getOffCache, setOffCache } from './storage.js';
+import { isAlcoholicOffData } from './alcohol.js';
 
 const DATABASES = [
   { source: 'off', host: 'https://world.openfoodfacts.org', kind: 'food' },
@@ -19,7 +20,7 @@ const FIELDS = [
 ].join(',');
 
 // Bump when the mapped product shape changes so old cached lookups are refetched.
-const CACHE_VERSION = 3;
+const CACHE_VERSION = 4;
 
 /** Public page where anyone can view/complete/add a product (no sign-in needed to view). */
 export function contributeUrl(barcode, kind = 'food') {
@@ -137,6 +138,8 @@ export function mapOffProduct(p, code) {
     novaGroup: Number(p.nova_group) || null,
     // nothing to judge: no ingredient list and no category that our rules understand
     dataIncomplete: !hasIngredients(p) && rest.category === 'other' && !p.nova_group,
+    // alcoholic drinks are blocked (not analysed, not saved)
+    alcoholic: isAlcoholicOffData(p),
     ...images(p),
   };
 }

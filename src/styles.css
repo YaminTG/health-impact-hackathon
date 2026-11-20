@@ -584,6 +584,9 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 .menu-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
 .route-loading { min-height: 60vh; display: grid; place-items: center; }
+.unsupported { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; color: var(--muted); }
+.unsupported h1 { font-size: 1.3rem; color: var(--text); }
+.unsupported p { color: var(--text); }
 
 /* ---------- product photos / contribute ---------- */
 .product-img { display: block; object-fit: contain; background: #fff; border-radius: 14px; border: 1px solid var(--border); }
