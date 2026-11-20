@@ -1,0 +1,57 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
+import basicSsl from '@vitejs/plugin-basic-ssl';
+
+// `npm run dev:https` uses --mode https so phones on the LAN get a secure
+// context (needed for the live camera barcode scanner on iOS/Android).
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    react(),
+    mode === 'https' && basicSsl(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'favicon-64.png'],
+      manifest: {
+        name: 'Clean Nutrition – Bowel Health Jordan',
+        short_name: 'Clean Nutrition',
+        description:
+          'Scan food, see colorectal-cancer diet risk based on evidence, find healthier swaps, and get screening reminders.',
+        lang: 'ar',
+        dir: 'rtl',
+        start_url: '/',
+        scope: '/',
+        display: 'standalone',
+        display_override: ['fullscreen', 'standalone'],
+        orientation: 'portrait',
+        theme_color: '#0F766E',
+        background_color: '#F6FBF9',
+        icons: [
+          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'maskable-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,json,woff2}'],
+        navigateFallback: '/index.html',
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+        runtimeCaching: [
+          {
+            // Google Fonts
+            urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: { cacheName: 'google-fonts', expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 365 } },
+          },
+          {
+            // Tesseract worker/core/language data from CDNs
+            urlPattern: /^https:\/\/(cdn\.jsdelivr\.net|unpkg\.com|tessdata\.projectnaptha\.com)\/.*/i,
+            handler: 'CacheFirst',
+            options: { cacheName: 'ocr-assets', expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 60 } },
+          },
+        ],
+      },
+      devOptions: { enabled: false },
+    }),
+  ].filter(Boolean),
+}));
