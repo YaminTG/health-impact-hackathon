@@ -14,9 +14,11 @@ import { addScan } from '../lib/storage.js';
 export default function Scan() {
   const { t, pick } = useI18n();
   const navigate = useNavigate();
-  const [params] = useSearchParams();
-  // /scan?mode=photo or /scan?mode=barcode opens that path directly
-  const [mode, setMode] = useState(() => (['photo', 'barcode'].includes(params.get('mode')) ? params.get('mode') : 'menu'));
+  const [params, setParams] = useSearchParams();
+  // The mode lives in the URL (/scan, /scan?mode=barcode, /scan?mode=photo) so the
+  // back button and the bottom "Scan" tab always work without a page refresh.
+  const mode = ['photo', 'barcode'].includes(params.get('mode')) ? params.get('mode') : 'menu';
+  const setMode = (m) => setParams(m === 'menu' ? {} : { mode: m });
   const [busy, setBusy] = useState(false);
   const [demoKind, setDemoKind] = useState('food');
   const demoProducts = PRODUCTS.filter((p) => (p.kind || 'food') === demoKind);

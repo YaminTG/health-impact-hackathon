@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { getProfile } from './lib/storage.js';
+import { applyPendingUpdate } from './lib/pwa.js';
 import Onboarding from './pages/Onboarding.jsx';
 import Home from './pages/Home.jsx';
 import Scan from './pages/Scan.jsx';
@@ -18,8 +19,10 @@ import Place from './pages/Place.jsx';
 const OPEN_ROUTES = ['/onboarding', '/dashboard', '/about'];
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   useEffect(() => window.scrollTo(0, 0), [pathname]);
+  // a new app version waiting? apply it now that the user has navigated
+  useEffect(() => applyPendingUpdate(), [pathname, search]);
   return null;
 }
 
