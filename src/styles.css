@@ -578,7 +578,7 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 .mini-menu li span:nth-child(2) { flex: 1; }
 .mini-menu .tier-dot, .menu-main .tier-dot, .chip .tier-dot { width: 10px; height: 10px; display: inline-block; vertical-align: middle; }
 .place-hero { display: flex; gap: 16px; align-items: center; }
-.place-hero > div { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.place-hero-info { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; min-width: 0; }
 .menu-item { gap: 6px; }
 .menu-row { display: flex; align-items: center; gap: 10px; }
 .menu-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }

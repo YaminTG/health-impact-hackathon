@@ -38,7 +38,7 @@ export default function Place() {
     <Page title={pick(r)} back>
       <section className="card place-hero">
         <ScoreRing score={r.score} size={110} label="/ 100" />
-        <div>
+        <div className="place-hero-info">
           <h1 className="result-name">{pick(r)}</h1>
           <p className="muted small">{pick(r, 'cuisine')}</p>
           <p className="place-meta small">
