@@ -84,6 +84,6 @@ export const OFF_CATEGORY_MAP = [
   ['sugary_drink', ['en:sodas', 'en:sweetened-beverages', 'en:carbonated-drinks', 'en:colas', 'en:fruit-nectars', 'en:juice-drinks', 'en:energy-drinks', 'en:iced-teas', 'en:fruit-based-beverages']],
   ['wholegrain', ['en:whole-wheat-breads', 'en:wholemeal-breads', 'en:whole-grain-breads', 'en:oat-flakes', 'en:rolled-oats', 'en:oatmeals', 'en:bulgur', 'en:brown-rices', 'en:whole-grain-pastas', 'en:popcorn']],
   ['refined_grain', ['en:white-breads', 'en:sliced-breads', 'en:sandwich-breads', 'en:breads', 'en:white-rices', 'en:pastas']],
-  ['snack', ['en:chips-and-fries', 'en:crisps', 'en:potato-crisps', 'en:biscuits', 'en:confectioneries', 'en:chocolates', 'en:salty-snacks', 'en:sweet-snacks', 'en:cakes', 'en:snacks']],
+  ['snack', ['en:sweet-spreads', 'en:chocolate-spreads', 'en:confectionary-based-spreads', 'en:chips-and-fries', 'en:crisps', 'en:potato-crisps', 'en:biscuits', 'en:confectioneries', 'en:chocolates', 'en:salty-snacks', 'en:sweet-snacks', 'en:cakes', 'en:snacks']],
   ['dairy', ['en:dairies', 'en:milks', 'en:yogurts', 'en:cheeses', 'en:labneh', 'en:fermented-milk-products']],
 ];
