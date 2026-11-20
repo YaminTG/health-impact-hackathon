@@ -91,6 +91,8 @@ const ar = {
   'ocr.retake': 'أعد التصوير',
   'ocr.productName': 'اسم المنتج (اختياري)',
   'ocr.defaultName': 'منتج ممسوح',
+  'ocr.typeInstead': 'اكتب المكونات أو الصقها بدلاً من ذلك',
+  'unit.g': 'غ',
 
   // categories
   'cat.processed_meat': 'لحوم مصنّعة',

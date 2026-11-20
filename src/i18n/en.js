@@ -91,6 +91,8 @@ const en = {
   'ocr.retake': 'Retake photo',
   'ocr.productName': 'Product name (optional)',
   'ocr.defaultName': 'Scanned product',
+  'ocr.typeInstead': 'Type or paste ingredients instead',
+  'unit.g': 'g',
 
   // categories
   'cat.processed_meat': 'Processed meat',

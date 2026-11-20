@@ -43,7 +43,7 @@ export default function Result() {
   const Arrow = dir === 'rtl' ? ArrowLeft : ArrowRight;
   const ingredients = (lang === 'ar' && p.ingredientsAr?.length ? p.ingredientsAr : p.ingredients) || [];
   const yesNo = (b) => (b ? t('common.yes') : t('common.no'));
-  const g = (n) => (n === null || n === undefined || n === '' ? t('res.fact.unknown') : `${n} g`);
+  const g = (n) => (n === null || n === undefined || n === '' ? t('res.fact.unknown') : `${n} ${t('unit.g')}`);
 
   return (
     <Page title={t('res.title')} back>
