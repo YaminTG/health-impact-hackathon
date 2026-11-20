@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { getProfile } from './lib/storage.js';
 import { applyPendingUpdate } from './lib/pwa.js';
 import UpdateBar from './components/UpdateBar.jsx';
+import NutritionChat from './components/NutritionChat.jsx';
 // Core demo path: loaded up front
 import Onboarding from './pages/Onboarding.jsx';
 import Home from './pages/Home.jsx';
@@ -34,6 +35,7 @@ function RouteLoading() {
 }
 
 const OPEN_ROUTES = ['/onboarding', '/dashboard', '/about'];
+const Nutritionist = lazy(() => import('./pages/Nutritionist.jsx'));
 
 function ScrollToTop() {
   const { pathname, search } = useLocation();
@@ -74,10 +76,12 @@ export default function App() {
           <Route path="/family" element={<Family />} />
           <Route path="/shopping-list" element={<ShoppingList />} />
           <Route path="/advertise" element={<Advertise />} />
+          <Route path="/nutritionist" element={<Nutritionist />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </Suspense>
       )}
+      {pathname !== '/onboarding' && pathname !== '/nutritionist' && <NutritionChat />}
     </>
   );
 }

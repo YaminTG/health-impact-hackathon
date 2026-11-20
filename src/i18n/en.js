@@ -431,6 +431,25 @@ const en = {
 
   'disclaimer': 'This is a nutrition awareness tool, not medical advice or diagnosis.',
 
+  // floating nutritionist chat
+  'nut.title': 'Nutritionist chat',
+  'nut.name': 'Nutritionist',
+  'nut.role': 'Demo nutrition assistant',
+  'nut.open': 'Open nutritionist chat',
+  'nut.close': 'Close nutritionist chat',
+  'nut.quick': 'Suggested questions',
+  'nut.placeholder': 'Ask about food or nutrition',
+  'nut.send': 'Send',
+  'nut.typing': 'Nutritionist is typing',
+  'nut.intro': 'Hello{name}! I can help with fibre, meal ideas, processed meat, sugar and bowel screening.',
+  'nut.demoBanner': 'Demo chat with suggested answers, not a live nutritionist.',
+  'nut.demoTag': 'Demo',
+  'nut.pickTime': 'Choose a consultation time',
+  'nut.booked': 'Booked for {slot}',
+  'nut.slot.today': 'Today',
+  'nut.slot.tomorrowAm': 'Tomorrow morning',
+  'nut.slot.tomorrowPm': 'Tomorrow afternoon',
+
   // settings
   'set.title': 'Settings',
   'set.language': 'Language',
