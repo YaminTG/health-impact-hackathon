@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Send, Info, CalendarCheck, Clock } from 'lucide-react';
+import { Send, CalendarCheck, Clock } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { nutritionistReply, QUICK } from '../lib/nutritionistBot.js';
@@ -57,11 +57,6 @@ export default function Nutritionist() {
   return (
     <Page title={t('nut.title')} back nav={false}>
       <div className="chat">
-        <div className="alert alert-info chat-demo">
-          <Info size={18} />
-          <span>{t('nut.demoBanner')}</span>
-        </div>
-
         <div className="chat-log" aria-live="polite">
           {messages.map((m) => {
             if (m.from === 'user') return <div key={m.id} className="bubble bubble-user">{m.text}</div>;

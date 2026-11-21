@@ -25,6 +25,7 @@ const Premium = lazy(() => import('./pages/Premium.jsx'));
 const Family = lazy(() => import('./pages/Family.jsx'));
 const ShoppingList = lazy(() => import('./pages/ShoppingList.jsx'));
 const Advertise = lazy(() => import('./pages/Advertise.jsx'));
+const Order = lazy(() => import('./pages/Order.jsx'));
 
 function RouteLoading() {
   return (
@@ -76,6 +77,7 @@ export default function App() {
           <Route path="/family" element={<Family />} />
           <Route path="/shopping-list" element={<ShoppingList />} />
           <Route path="/advertise" element={<Advertise />} />
+          <Route path="/order/:id" element={<Order />} />
           <Route path="/nutritionist" element={<Nutritionist />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

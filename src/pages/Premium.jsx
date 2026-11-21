@@ -67,7 +67,6 @@ export default function Premium() {
           <button className="btn btn-premium btn-block btn-lg" onClick={() => setPremium(startPremium(plan))}>
             <Crown size={18} /> {t('premium.start')}
           </button>
-          <p className="muted small center">{t('premium.demoNote')}</p>
         </section>
       )}
 

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ScanLine, TriangleAlert, ChevronLeft, ChevronRight, Beef, Wheat, UtensilsCrossed } from 'lucide-react';
+import { ScanBarcode, Stethoscope, ChevronLeft, ChevronRight, Beef, Wheat, UtensilsCrossed } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import ScreeningNudge from '../components/ScreeningNudge.jsx';
 import ScoreRing from '../components/ScoreRing.jsx';
@@ -27,7 +27,7 @@ export default function Home() {
 
       <Link to="/scan" className="scan-hero">
         <span className="scan-hero-icon">
-          <ScanLine size={40} />
+          <ScanBarcode size={40} />
         </span>
         <span>
           <strong>{t('home.scanTitle')}</strong>
@@ -71,7 +71,7 @@ export default function Home() {
       <AdBanner placement="home" />
 
       <Link to="/warning-signs" className="card warn-link">
-        <TriangleAlert size={24} />
+        <Stethoscope size={24} />
         <span>
           <strong>{t('home.warningTitle')}</strong>
           <small>{t('home.warningText')}</small>

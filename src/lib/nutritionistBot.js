@@ -54,8 +54,8 @@ export function nutritionistReply(input, ctx) {
     return {
       card: 'booking',
       text: t(
-        'بالتأكيد! اختر موعداً للاستشارة المباشرة مع أخصائي تغذية. (هذا حجز تجريبي)',
-        'Of course! Pick a time for a live consultation with a nutritionist. (This is a demo booking.)',
+        'بالتأكيد! اختر موعداً للاستشارة المباشرة مع أخصائي تغذية.',
+        'Of course! Pick a time for a live consultation with a nutritionist.',
       ),
     };
 
@@ -148,8 +148,8 @@ export function nutritionistReply(input, ctx) {
 
   return {
     text: t(
-      'سؤال جيد! في هذا النموذج التجريبي أجيب عن مواضيع محددة: الألياف، اللحوم المصنّعة، السكر، الوجبات، الفحص ونقاطك. في النسخة الكاملة سيجيبك أخصائي تغذية حقيقي — يمكنك حجز استشارة تجريبية الآن.',
-      'Good question! In this demo I can answer specific topics: fibre, processed meat, sugar, meals, screening and your score. In the full version a real nutritionist will answer — you can book a demo consultation now.',
+      'سؤال جيد! أستطيع مساعدتك في: الألياف، اللحوم المصنّعة، السكر، الوجبات، الفحص ونقاطك. لأي سؤال آخر يمكنك حجز استشارة مع أخصائي تغذية الآن.',
+      'Good question! I can help with fibre, processed meat, sugar, meals, screening and your score. For anything else, you can book a consultation with a nutritionist now.',
     ),
     card: 'booking',
   };

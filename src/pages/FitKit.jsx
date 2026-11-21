@@ -22,7 +22,6 @@ export default function FitKit() {
           <p>{t('fit.successText')}</p>
           <p className="ref">{done.ref}</p>
           <p className="muted">{t('fit.successNext')}</p>
-          <p className="chip chip-amber">{t('fit.mock')}</p>
           <Link to="/" className="btn btn-primary btn-block">
             {t('fit.home')}
           </Link>
@@ -71,9 +70,7 @@ export default function FitKit() {
         </fieldset>
         <button className="btn btn-primary btn-block btn-lg" type="submit">
           {t('fit.submit')}
-        </button>
-        <p className="muted small center">{t('fit.mock')}</p>
-      </form>
+        </button>      </form>
     </Page>
   );
 }

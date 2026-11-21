@@ -2,13 +2,25 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import basicSsl from '@vitejs/plugin-basic-ssl';
+import legacy from '@vitejs/plugin-legacy';
 
 // `npm run dev:https` uses --mode https so phones on the LAN get a secure
 // context (needed for the live camera barcode scanner on iOS/Android).
 export default defineConfig(({ mode }) => ({
+  build: {
+    // Vite 8's default only targets ~2023+ browsers (Safari 16.4 / Chrome 111).
+    // Lower the modern build so phones from ~2020 on run it directly...
+    target: ['es2020', 'safari14', 'chrome87', 'firefox78', 'edge88'],
+  },
   plugins: [
     react(),
     mode === 'https' && basicSsl(),
+    // ...and ship a second, transpiled + polyfilled build for anything older
+    // (iOS 12-13, old Android Chrome / Samsung Internet). Browsers pick the right one.
+    legacy({
+      targets: ['defaults', 'iOS >= 12', 'Chrome >= 64', 'Samsung >= 9', 'Firefox >= 68'],
+      modernPolyfills: true,
+    }),
     VitePWA({
       // 'prompt': a new version waits in the background instead of taking over
       // mid-session; src/lib/pwa.js applies it when the app is hidden or the user taps "Update".
@@ -26,8 +38,8 @@ export default defineConfig(({ mode }) => ({
         display: 'standalone',
         display_override: ['fullscreen', 'standalone'],
         orientation: 'portrait',
-        theme_color: '#13795B',
-        background_color: '#F6F5F0',
+        theme_color: '#2f7d4a',
+        background_color: '#f7f3ea',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },

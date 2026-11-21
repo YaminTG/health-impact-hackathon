@@ -54,7 +54,6 @@ export default function Advertise() {
         <AdBanner placement="example" />
       </section>
 
-      <p className="muted small">{t('adv.mock')}</p>
     </Page>
   );
 }

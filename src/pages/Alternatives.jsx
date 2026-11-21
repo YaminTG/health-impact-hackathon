@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { MapPin, Store, Check, ListPlus, ShoppingBasket } from 'lucide-react';
+import { MapPin, Store, Check, ListPlus, ShoppingBasket, ShoppingBag } from 'lucide-react';
 import AdBanner from '../components/AdBanner.jsx';
 import { PremiumBadge } from '../components/PremiumLock.jsx';
 import { Page } from '../components/Layout.jsx';
@@ -13,6 +13,7 @@ import { getScan, isPremium, getShopping, addToShopping } from '../lib/storage.j
 import { getAlternatives } from '../lib/catalog.js';
 import { restaurantAlternatives } from '../lib/places.js';
 import { swapReasons } from '../lib/scoring.js';
+import { dishOrderId } from '../lib/market.js';
 
 export default function Alternatives() {
   const { id } = useParams();
@@ -69,6 +70,12 @@ export default function Alternatives() {
                 <MapPin size={14} /> {t('alt.away', { d: shop.distanceKm })}
               </span>
             </div>
+            <Link
+              to={`/order/${p.restaurantId ? dishOrderId(p.restaurantId, alt.id) : alt.id}`}
+              className="btn btn-primary btn-sm"
+            >
+              <ShoppingBag size={16} /> {t('order.ctaPrice', { price: price(alt.approxPriceJOD).replace('≈ ', '') })}
+            </Link>
             {!p.restaurantId &&
               (premium ? (
                 <button
@@ -97,7 +104,6 @@ export default function Alternatives() {
       )}
 
       <AdBanner placement="alternatives" />
-      <p className="muted small">{t('alt.priceNote')}</p>
       <Disclaimer />
     </Page>
   );

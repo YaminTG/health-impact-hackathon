@@ -1,6 +1,6 @@
 {
   "_note": "MOCK, anonymized, aggregated data for demonstration only. No personal data.",
-  "period": { "en": "Last 30 days (mock)", "ar": "آخر 30 يوماً (بيانات تجريبية)" },
+  "period": { "en": "Last 30 days", "ar": "آخر 30 يوماً" },
   "kpis": {
     "scans": 12480,
     "activeUsers": 2310,

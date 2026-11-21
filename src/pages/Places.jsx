@@ -160,7 +160,6 @@ export default function Places() {
       )}
 
       <AdBanner placement="places" />
-      <p className="muted small">{t('places.note')}</p>
     </Page>
   );
 }

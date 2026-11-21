@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, ScanLine, Camera, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ScanLine, Camera, ExternalLink, ShoppingBasket } from 'lucide-react';
 import { contributeUrl } from '../lib/openFoodFacts.js';
 import { Page } from '../components/Layout.jsx';
 import RiskBadge from '../components/RiskBadge.jsx';
@@ -13,6 +13,9 @@ import { scoreProduct, isFood } from '../lib/scoring.js';
 import { getAlternatives } from '../lib/catalog.js';
 import { restaurantAlternatives } from '../lib/places.js';
 import { isScreeningEligible } from '../lib/eligibility.js';
+import { findCarcinogens, nothingToCheck } from '../lib/carcinogens.js';
+import { getCleanSubstitutes, recommendReason, changeTips } from '../lib/market.js';
+import { CarcinogenPanel, SubstituteList, ChangeTips } from '../components/CleanSwaps.jsx';
 
 function Fact({ label, value }) {
   return (
@@ -44,6 +47,11 @@ export default function Result() {
   const v = scoreProduct(p);
   const food = isFood(p);
   const alts = p.restaurantId ? restaurantAlternatives(p) : getAlternatives(p);
+  const findings = findCarcinogens(p);
+  const unchecked = v.unknown || nothingToCheck(p);
+  const recReason = recommendReason(p, findings);
+  const subs = recReason ? getCleanSubstitutes(p, findings) : [];
+  const tips = changeTips(p, findings);
   const typeLabel = food ? t(`cat.${p.category}`) : t(`kind.${p.kind}`);
   const Arrow = dir === 'rtl' ? ArrowLeft : ArrowRight;
   // Show the list in the current language; fall back to the other one
@@ -66,6 +74,15 @@ export default function Result() {
         <p className="result-reason">{t(`reason.${v.primary.id}`)}</p>
         {food && v.tier !== 'green' && <p className="muted small">{t('res.regular')}</p>}
         {!food && <p className="muted small">{t('res.hazardNote')}</p>}
+        {subs.length > 0 && (
+          <button
+            type="button"
+            className="btn btn-primary btn-block hero-recommend"
+            onClick={() => document.getElementById('recommended')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          >
+            <ShoppingBasket size={18} /> {t('subs.jump', { n: subs.length })}
+          </button>
+        )}
       </section>
 
       {v.unknown && (
@@ -86,11 +103,17 @@ export default function Result() {
         </section>
       )}
 
-      {alts.length > 0 && !v.unknown && (
+      <CarcinogenPanel findings={findings} unknown={unchecked && !findings.length} food={food} dish={!!p.restaurantId} />
+
+      <SubstituteList items={subs} reason={recReason} count={findings.length} />
+
+      {p.restaurantId && alts.length > 0 && !v.unknown && (
         <Link to={`/alternatives/${scan.id}`} className="btn btn-primary btn-block btn-lg">
           {t('res.alternatives')} <Arrow size={20} />
         </Link>
       )}
+
+      {!v.unknown && <ChangeTips tips={tips} />}
 
       <section className="section">
         <h2 className="section-title">{t('res.why')}</h2>

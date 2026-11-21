@@ -126,7 +126,9 @@ Every non-food result states: *IARC classes describe hazard, not the risk at cos
 Guard rails:
 
 - Labaneh, plain dairy and traditional staples (hummus, za'atar, freekeh, lentils and so on) are never flagged by the refined/ultra-processed rule.
-- The app never uses the word "organic"; it says "healthier option".
+- The verdict never says "organic"; it says "healthier option". "Organic" appears only as a seller/product label on substitutes (`src/data/cleanMarket.json`), never as a health claim.
+- **Carcinogens panel** (`src/lib/carcinogens.js`): names each carcinogen or harmful ingredient found (processed/red meat, nitrites, potassium bromate, E171, aspartame, E150c/d, BHA, smoke flavouring, likely acrylamide; for non-food, the concern list above) with its IARC group and source, plus the "hazard, not dose" caveat. It reports only; the tier still comes from `scoring.js`.
+- **Substitutes and ordering** (`src/lib/market.js`, `/order/:id`): mock farms, organic sellers, bakeries and natural-care shops, plus partner-shop swaps and restaurant dishes. Ordering is a demo (cash on delivery, nothing is sent, saved in localStorage as `cn.orders`).
 - The app never says a product "causes cancer". Copy always talks about regular intake and diet patterns.
 
 ### Editing the keyword dictionary

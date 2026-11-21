@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { MapPin, Plus, Check } from 'lucide-react';
+import { MapPin, Check, ShoppingBag, NotebookPen } from 'lucide-react';
+import { price } from '../components/CleanSwaps.jsx';
+import { dishOrderId } from '../lib/market.js';
 import { Page } from '../components/Layout.jsx';
 import ScoreRing from '../components/ScoreRing.jsx';
 import { TierDot } from '../components/RiskBadge.jsx';
@@ -58,25 +60,30 @@ export default function Place() {
               <div className="menu-main">
                 <strong>{pick(m.dish)}</strong>
                 <small className="muted">
-                  <TierDot tier={m.verdict.tier} /> {t(tierLabelKey(m.verdict))} · ≈ {m.priceJOD.toFixed(2)} {t('common.jod')}
+                  <TierDot tier={m.verdict.tier} /> {t(tierLabelKey(m.verdict))}
                 </small>
               </div>
+              <span className="price-tag">{price(m.priceJOD, t)}</span>
+            </div>
+            <p className="small">{t(`reason.${m.verdict.primary.id}`)}</p>
+            <div className="menu-actions">
+              <Link to={`/order/${dishOrderId(r.id, m.dish.id)}`} className="btn btn-primary btn-sm">
+                <ShoppingBag size={16} /> {t('order.ctaPrice', { price: price(m.priceJOD, t) })}
+              </Link>
               {logged[m.dish.id] ? (
                 <Link to={`/result/${logged[m.dish.id]}`} className="btn btn-secondary btn-sm">
                   <Check size={16} /> {t('places.logged')}
                 </Link>
               ) : (
                 <button className="btn btn-ghost btn-sm" onClick={() => logMeal(m)} aria-label={t('places.log')}>
-                  <Plus size={16} /> {t('places.log')}
+                  <NotebookPen size={16} /> {t('places.log')}
                 </button>
               )}
             </div>
-            <p className="small">{t(`reason.${m.verdict.primary.id}`)}</p>
           </article>
         ))}
       </section>
 
-      <p className="muted small">{t('places.note')}</p>
       <Disclaimer />
     </Page>
   );

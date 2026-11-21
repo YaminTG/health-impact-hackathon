@@ -9,7 +9,17 @@ const KEYS = {
   premium: 'cn.premium',
   family: 'cn.family',
   shopping: 'cn.shopping',
+  orders: 'cn.orders',
 };
+
+// ---- orders (demo: nothing is sent to a seller, no payment is taken) --------
+export const getOrders = () => read(KEYS.orders, []);
+export function addOrder(order) {
+  const ref = `ORD-${Date.now().toString(36).slice(-4).toUpperCase()}${Math.floor(10 + Math.random() * 90)}`;
+  const entry = { ...order, ref, ts: Date.now() };
+  write(KEYS.orders, [entry, ...getOrders()].slice(0, 100));
+  return entry;
+}
 
 // ---- premium (demo subscription: no payment is taken) ---------------------
 export const getPremium = () => read(KEYS.premium, { active: false });
@@ -121,6 +131,7 @@ export function exportData() {
     fitRequests: read(KEYS.fit, []),
     family: getFamily(),
     shoppingList: getShopping(),
+    orders: getOrders(),
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);

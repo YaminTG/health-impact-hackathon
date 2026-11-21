@@ -23,7 +23,7 @@ export default function Dashboard() {
           <h1>{t('dash.title')}</h1>
           <p className="muted">{t('dash.subtitle')}</p>
           <p className="small">
-            <span className="chip chip-amber">{t('dash.mock')}</span> <span className="muted">{pick(data.period)}</span>
+            <span className="muted">{pick(data.period)}</span>
           </p>
         </div>
         <div className="dash-actions">
