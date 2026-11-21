@@ -289,7 +289,7 @@ const en = {
   'res.tier.amber': 'Moderate — enjoy less often',
   'res.tier.green': 'Healthier option',
   'res.tier.greenNeutral': 'No diet-risk flags',
-  'res.why': 'Why?',
+  'res.why': 'Health findings',
   'res.evidence': 'Evidence',
   'res.source': 'Source',
   'res.facts': 'What we found on the label',
@@ -308,6 +308,8 @@ const en = {
   'res.source.off': 'Barcode · Open Food Facts',
   'res.source.ocr': 'Label photo',
   'res.regular': 'Risk depends on how often you eat it, not a single serving.',
+  'res.recommendations': 'Try these demo alternatives',
+  'res.recommendationsNote': 'These are sample products, not specific brands. Check the actual package ingredients and availability.',
 
   // reasons (one-liners)
   'reason.processed_meat': 'Eating processed meat regularly is linked to higher bowel cancer risk.',

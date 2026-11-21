@@ -43,8 +43,8 @@ const ar = {
   'home.viewDetails': 'عرض التفاصيل',
   'home.warningTitle': 'هل لديك أعراض مقلقة؟',
   'home.warningText': 'تحقق من العلامات التحذيرية لسرطان القولون',
-  'home.recent': 'آخر المسوحات',
-  'home.noRecent': 'لا توجد مسوحات بعد. جرّب أحد الاختيارات السريعة في شاشة المسح!',
+  'home.recent': 'المنتجات التي فحصتها مؤخرًا',
+  'home.noRecent': 'لا توجد مسوحات بعد. جرّب منتجاً تجريبياً!',
 
   // scan
   'scan.title': 'امسح منتجاً',
@@ -289,7 +289,7 @@ const ar = {
   'res.tier.amber': 'باعتدال — تناوله أقل',
   'res.tier.green': 'خيار صحي أكثر',
   'res.tier.greenNeutral': 'لا توجد مؤشرات خطر غذائية',
-  'res.why': 'لماذا؟',
+  'res.why': 'النتائج الصحية',
   'res.evidence': 'قوة الدليل',
   'res.source': 'المصدر',
   'res.facts': 'ما وجدناه على الملصق',
@@ -308,6 +308,8 @@ const ar = {
   'res.source.off': 'باركود · Open Food Facts',
   'res.source.ocr': 'صورة الملصق',
   'res.regular': 'الخطر مرتبط بعدد مرات تناوله بانتظام، وليس بحصة واحدة.',
+  'res.recommendations': 'جرّب هذه البدائل التجريبية',
+  'res.recommendationsNote': 'هذه منتجات نموذجية وليست علامات تجارية محددة. تحقّق من مكونات العبوة الفعلية ومن توافر المنتج.',
 
   // reasons
   'reason.processed_meat': 'تناول اللحوم المصنّعة بانتظام مرتبط بارتفاع خطر سرطان القولون.',

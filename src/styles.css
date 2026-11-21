@@ -456,6 +456,10 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 .fact strong { color: var(--text); font-size: 1rem; }
 .ingredients summary { font-weight: 600; cursor: pointer; }
 .ingredients p { margin-top: 8px; font-size: 0.9rem; color: var(--muted); }
+.recommendation-list { display: flex; flex-direction: column; gap: 10px; }
+.recommendation-card { display: flex; flex-direction: column; gap: 8px; }
+.recommendation-head { display: flex; align-items: center; gap: 10px; }
+.recommendation-head strong { flex: 1; }
 .disclaimer {
   display: flex;
   gap: 8px;

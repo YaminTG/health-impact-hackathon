@@ -134,6 +134,34 @@ export default function Result() {
         ))}
       </section>
 
+      {!p.restaurantId && alts.length > 0 && !v.unknown && (
+        <section className="section">
+          <h2 className="section-title">{t('res.recommendations')}</h2>
+          <p className="muted small">{t('res.recommendationsNote')}</p>
+          <div className="recommendation-list">
+            {alts.map(({ alt, verdict, reasons }) => (
+              <article key={alt.id} className="card recommendation-card">
+                <div className="recommendation-head">
+                  <ProductImage product={alt} size="sm" />
+                  <strong>{productName(alt, pick, t)}</strong>
+                  <RiskBadge verdict={verdict} size="sm" />
+                </div>
+                {reasons.length > 0 && (
+                  <ul className="reason-chips">
+                    {reasons.map((reason) => (
+                      <li key={reason}>{t(reason)}</li>
+                    ))}
+                  </ul>
+                )}
+              </article>
+            ))}
+          </div>
+          <Link to={`/alternatives/${scan.id}`} className="btn btn-secondary btn-block">
+            {t('res.alternatives')} <Arrow size={18} />
+          </Link>
+        </section>
+      )}
+
       <section className="section">
         <h2 className="section-title">{t('res.facts')}</h2>
         {food ? (
