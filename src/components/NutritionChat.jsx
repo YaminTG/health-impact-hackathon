@@ -60,7 +60,6 @@ export default function NutritionChat() {
             <span className="avatar avatar-md"><UserRound size={21} /></span>
             <div>
               <strong>{t('nut.name')}</strong>
-              <small>{t('nut.role')}</small>
             </div>
             <button className="icon-btn" type="button" onClick={() => setOpen(false)} aria-label={t('nut.close')}>
               <X size={20} />

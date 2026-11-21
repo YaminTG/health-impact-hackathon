@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Send, Info, CalendarCheck, Clock, UserRound } from 'lucide-react';
+import { Send, Info, CalendarCheck, Clock } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { nutritionistReply, QUICK } from '../lib/nutritionistBot.js';
@@ -61,15 +61,6 @@ export default function Nutritionist() {
           <Info size={18} />
           <span>{t('nut.demoBanner')}</span>
         </div>
-
-        <header className="chat-head">
-          <span className="avatar avatar-md"><UserRound size={22} /></span>
-          <div>
-            <strong>{t('nut.name')}</strong>
-            <small className="muted">{t('nut.role')}</small>
-          </div>
-          <span className="chip">{t('nut.demoTag')}</span>
-        </header>
 
         <div className="chat-log" aria-live="polite">
           {messages.map((m) => {

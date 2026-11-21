@@ -434,7 +434,6 @@ const en = {
   // floating nutritionist chat
   'nut.title': 'Nutritionist chat',
   'nut.name': 'Nutritionist',
-  'nut.role': 'Demo nutrition assistant',
   'nut.open': 'Open nutritionist chat',
   'nut.close': 'Close nutritionist chat',
   'nut.quick': 'Suggested questions',
@@ -443,7 +442,6 @@ const en = {
   'nut.typing': 'Nutritionist is typing',
   'nut.intro': 'Hello{name}! I can help with fibre, meal ideas, processed meat, sugar and bowel screening.',
   'nut.demoBanner': 'Demo chat with suggested answers, not a live nutritionist.',
-  'nut.demoTag': 'Demo',
   'nut.pickTime': 'Choose a consultation time',
   'nut.booked': 'Booked for {slot}',
   'nut.slot.today': 'Today',

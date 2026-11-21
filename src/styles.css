@@ -763,8 +763,6 @@ textarea.input { min-height: 140px; resize: vertical; line-height: 1.6; }
 /* Full nutritionist page */
 .chat { display: flex; flex-direction: column; gap: 12px; min-height: calc(100dvh - 150px); }
 .chat-demo { margin: 0; }
-.chat-head { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 10px 12px; }
-.chat-head > div { display: flex; flex: 1; flex-direction: column; }
 .chat-log { flex: 1; min-height: 320px; max-height: 52dvh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 4px 2px; }
 .bubble { max-width: 86%; padding: 10px 13px; border-radius: 16px; white-space: pre-line; }
 .bubble-bot { align-self: flex-start; background: #edf4f0; border-end-start-radius: 5px; }
