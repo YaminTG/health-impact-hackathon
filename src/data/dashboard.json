@@ -5,8 +5,44 @@
     "scans": 12480,
     "activeUsers": 2310,
     "highRiskScanShare": 0.31,
-    "fitRequests": 412
+    "fitRequests": 412,
+    "orders": 1860,
+    "swapRate": 0.24,
+    "basketRate": 0.38,
+    "swaps": 1240
   },
+  "swapsFrom": [
+    { "category": "processed_meat", "value": 420 },
+    { "category": "sugary_drink", "value": 360 },
+    { "category": "snack", "value": 210 },
+    { "category": "refined_grain", "value": 150 },
+    { "category": "red_meat", "value": 100 }
+  ],
+  "scanMix": [
+    { "key": "processed_meat", "en": "Processed meat", "ar": "لحوم مصنّعة", "value": 18, "tier": "red" },
+    { "key": "sugary_drink", "en": "Sugary drinks", "ar": "مشروبات سكرية", "value": 21, "tier": "amber" },
+    { "key": "refined_grain", "en": "Refined grains", "ar": "حبوب مكررة", "value": 17, "tier": "amber" },
+    { "key": "snack", "en": "Packaged snacks", "ar": "تسالي مغلفة", "value": 15, "tier": "amber" },
+    { "key": "red_meat", "en": "Red meat", "ar": "لحوم حمراء", "value": 9, "tier": "amber" },
+    { "key": "wholegrain", "en": "Wholegrain / high fibre", "ar": "حبوب كاملة / ألياف", "value": 12, "tier": "green" },
+    { "key": "other", "en": "Other foods", "ar": "أطعمة أخرى", "value": 8, "tier": "green" }
+  ],
+  "carcinogenFlags": [
+    { "key": "processed_meat", "en": "Processed meat (IARC 1)", "ar": "لحوم مصنّعة (IARC 1)", "value": 18 },
+    { "key": "nitrite_nitrate", "en": "Nitrites E249–E252 (IARC 2A)", "ar": "نتريت E249–E252 ‏(IARC 2A)", "value": 16 },
+    { "key": "caramel_4mei", "en": "Caramel colour E150d (IARC 2B)", "ar": "ملون كراميل E150d ‏(IARC 2B)", "value": 11 },
+    { "key": "acrylamide", "en": "Acrylamide, fried snacks (IARC 2A)", "ar": "أكريلاميد في التسالي المقلية (IARC 2A)", "value": 9 },
+    { "key": "aspartame", "en": "Aspartame E951 (IARC 2B)", "ar": "أسبارتام E951 ‏(IARC 2B)", "value": 6 }
+  ],
+  "ordersByType": [
+    { "type": "farm", "value": 610 },
+    { "type": "organic", "value": 430 },
+    { "type": "bakery", "value": 320 },
+    { "type": "dairy", "value": 190 },
+    { "type": "fish", "value": 140 },
+    { "type": "restaurant", "value": 110 },
+    { "type": "natural", "value": 60 }
+  ],
   "scansByArea": [
     { "en": "Khalda", "ar": "خلدا", "value": 2140 },
     { "en": "Tla' Al-Ali", "ar": "تلاع العلي", "value": 1890 },
@@ -33,11 +69,11 @@
     { "en": "Jabal Amman", "ar": "جبل عمان", "requests": 41, "eligible": 230 }
   ],
   "weeklyTrend": [
-    { "week": "W1", "scans": 2210, "avgGutScore": 61 },
-    { "week": "W2", "scans": 2480, "avgGutScore": 63 },
-    { "week": "W3", "scans": 2690, "avgGutScore": 64 },
-    { "week": "W4", "scans": 2950, "avgGutScore": 67 },
-    { "week": "W5", "scans": 3130, "avgGutScore": 69 },
-    { "week": "W6", "scans": 3420, "avgGutScore": 70 }
+    { "week": "W1", "scans": 2210, "orders": 190, "highRiskShare": 36 },
+    { "week": "W2", "scans": 2480, "orders": 240, "highRiskShare": 35 },
+    { "week": "W3", "scans": 2690, "orders": 290, "highRiskShare": 33 },
+    { "week": "W4", "scans": 2950, "orders": 330, "highRiskShare": 31 },
+    { "week": "W5", "scans": 3130, "orders": 380, "highRiskShare": 29 },
+    { "week": "W6", "scans": 3420, "orders": 430, "highRiskShare": 28 }
   ]
 }

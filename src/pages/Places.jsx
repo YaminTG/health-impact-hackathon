@@ -1,13 +1,27 @@
 import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, MapPin, X, Store, Leaf } from 'lucide-react';
+import { Search, MapPin, X, Store, Leaf, UtensilsCrossed, ShoppingCart, Truck, Plus, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import ScoreRing from '../components/ScoreRing.jsx';
 import AdBanner from '../components/AdBanner.jsx';
 import RiskBadge, { TierDot } from '../components/RiskBadge.jsx';
+import { VENDOR_ICON, price } from '../components/CleanSwaps.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { searchPlaces, placeBand } from '../lib/places.js';
 import { scoreProduct } from '../lib/scoring.js';
+import { normalize } from '../lib/classify.js';
+import { allStores, vendorItems, getOrderable, basketEntryFromItem } from '../lib/market.js';
+import { getBasket, addToBasket } from '../lib/storage.js';
+
+const SHOP_QUICK = [
+  { en: 'Vegetables', ar: 'خضار' },
+  { en: 'Fruit', ar: 'فواكه' },
+  { en: 'Bread', ar: 'خبز' },
+  { en: 'Labaneh', ar: 'لبنة' },
+  { en: 'Oats', ar: 'شوفان' },
+  { en: 'Fish', ar: 'سمك' },
+  { en: 'Pharmacy', ar: 'صيدلية' },
+];
 
 const QUICK = [
   { en: 'Falafel', ar: 'فلافل' },
@@ -20,30 +34,115 @@ const QUICK = [
   { en: 'Burger', ar: 'برجر' },
 ];
 
+function ShopsList({ query }) {
+  const { t, pick } = useI18n();
+  const q = normalize(query.trim());
+  const stores = allStores()
+    .map((v) => {
+      const items = vendorItems(v.id);
+      const matches = q
+        ? items.filter((i) => [i.nameEn, i.nameAr, i.aisle && t(`aisle.${i.aisle}`)].some((n) => n && normalize(n).includes(q)))
+        : [];
+      const direct = !q || [v.nameEn, v.nameAr, v.areaEn, v.areaAr, t(`vendor.${v.type}`)].some((n) => n && normalize(n).includes(q));
+      return direct || matches.length ? { ...v, items, matches } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.matches.length - a.matches.length || a.distanceKm - b.distanceKm);
+
+  if (!stores.length) return <div className="card empty">{t('shops.none')}</div>;
+
+  return (
+    <div className="alt-list">
+      {stores.map((v) => {
+        const Icon = VENDOR_ICON[v.type] || Store;
+        const shown = (v.matches.length ? v.matches : v.items).slice(0, 3);
+        return (
+          <Link key={v.id} to={`/store/${v.id}`} className="card place-card">
+            <div className="place-head">
+              <span className={`vendor-icon vendor-${v.type}`}>
+                <Icon size={24} />
+              </span>
+              <div className="place-main">
+                <h3>{pick(v)}</h3>
+                <small className="muted">
+                  {t(`vendor.${v.type}`)} · {t('shops.products', { n: v.itemCount })}
+                </small>
+                <small className="place-meta">
+                  <MapPin size={13} /> {pick(v, 'area')} · {t('alt.away', { d: v.distanceKm })} · <Truck size={13} /> {price(v.deliveryFeeJOD, t)}
+                </small>
+              </div>
+            </div>
+            <div>
+              <p className="small muted">{v.matches.length ? t('places.matching') : t('shops.popular')}</p>
+              <ul className="mini-menu">
+                {shown.map((i) => (
+                  <li key={i.id}>
+                    {i.source === 'catalog' ? <TierDot tier={scoreProduct(i.product).tier} /> : <span aria-hidden="true">{i.emoji}</span>}
+                    <span>{pick(i)}</span>
+                    <span className="price-tag price-tag-sm">{price(i.priceJOD, t)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <span className="order-cta">
+              {t('shops.open')} <ChevronIcon />
+            </span>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+function ChevronIcon() {
+  const { dir } = useI18n();
+  return dir === 'rtl' ? <ChevronLeft size={16} /> : <ChevronRight size={16} />;
+}
+
 export default function Places() {
   const { t, pick, lang } = useI18n();
   const [params, setParams] = useSearchParams();
   const [query, setQuery] = useState(params.get('q') || '');
   const [sort, setSort] = useState('healthy');
+  const tab = params.get('tab') === 'shops' ? 'shops' : 'food';
   const results = useMemo(() => searchPlaces(query, { sort }), [query, sort]);
   const topDish = results.dishes[0];
+  const [basketKeys, setBasketKeys] = useState(() => new Set(getBasket().map((b) => b.key)));
 
   function update(q) {
     setQuery(q);
-    setParams(q ? { q } : {}, { replace: true });
+    setParams({ ...(q ? { q } : {}), ...(tab === 'shops' ? { tab } : {}) }, { replace: true });
+  }
+  function setTab(next) {
+    setParams({ ...(query ? { q: query } : {}), ...(next === 'shops' ? { tab: next } : {}) }, { replace: true });
+  }
+  function addProduct(productId) {
+    const item = getOrderable(productId);
+    if (!item) return;
+    addToBasket(basketEntryFromItem(item));
+    setBasketKeys(new Set(getBasket().map((b) => b.key)));
   }
 
   return (
     <Page>
       <h1 className="page-title">{t('places.title')}</h1>
-      <p className="muted small">{t('places.subtitle')}</p>
+      <p className="muted small">{t(tab === 'shops' ? 'shops.subtitle' : 'places.subtitle')}</p>
+
+      <div className="seg seg-full" role="tablist">
+        <button role="tab" aria-selected={tab === 'food'} className={tab === 'food' ? 'on' : ''} onClick={() => setTab('food')}>
+          <UtensilsCrossed size={16} /> {t('shops.tabFood')}
+        </button>
+        <button role="tab" aria-selected={tab === 'shops'} className={tab === 'shops' ? 'on' : ''} onClick={() => setTab('shops')}>
+          <ShoppingCart size={16} /> {t('shops.tabShops')}
+        </button>
+      </div>
 
       <form className="search-box" role="search" onSubmit={(e) => e.preventDefault()}>
         <Search size={20} aria-hidden="true" />
         <input
           type="search"
           className="search-input"
-          placeholder={t('places.placeholder')}
+          placeholder={t(tab === 'shops' ? 'shops.placeholder' : 'places.placeholder')}
           value={query}
           onChange={(e) => update(e.target.value)}
           aria-label={t('places.placeholder')}
@@ -56,6 +155,19 @@ export default function Places() {
         )}
       </form>
 
+      {tab === 'shops' ? (
+        <>
+          <div className="chip-row">
+            {SHOP_QUICK.map((q) => (
+              <button key={q.en} className="chip chip-btn" onClick={() => update(lang === 'ar' ? q.ar : q.en)}>
+                {lang === 'ar' ? q.ar : q.en}
+              </button>
+            ))}
+          </div>
+          <ShopsList query={query} />
+        </>
+      ) : (
+      <>
       <div className="chip-row">
         {QUICK.map((q) => (
           <button key={q.en} className="chip chip-btn" onClick={() => update(lang === 'ar' ? q.ar : q.en)}>
@@ -126,7 +238,7 @@ export default function Places() {
                       <li key={m.dish.id}>
                         <TierDot tier={m.verdict.tier} />
                         <span>{pick(m.dish)}</span>
-                        <span className="muted">≈ {m.priceJOD.toFixed(2)}</span>
+                        <span className="price-tag price-tag-sm">{m.priceJOD.toFixed(2)} {t('common.jod')}</span>
                       </li>
                     ))}
                   </ul>
@@ -145,18 +257,36 @@ export default function Places() {
           <div className="card list-card">
             {results.products.map(({ product, verdict, shop }) => (
               <div key={product.id} className="scan-row">
-                <span className="scan-emoji">{product.emoji}</span>
-                <span className="scan-row-main">
-                  <strong>{pick(product)}</strong>
-                  <small>
-                    {pick(shop)} · {pick(shop, 'area')} · {t('alt.away', { d: shop.distanceKm })}
-                  </small>
-                </span>
-                <TierDot tier={verdict.tier} />
+                <Link to={`/order/${product.id}`} className="scan-row-link">
+                  <span className="scan-emoji">{product.emoji}</span>
+                  <span className="scan-row-main">
+                    <strong>
+                      <TierDot tier={verdict.tier} /> {pick(product)}
+                    </strong>
+                    <small>
+                      {pick(shop)} · {t('alt.away', { d: shop.distanceKm })}
+                    </small>
+                  </span>
+                </Link>
+                <span className="price-tag price-tag-sm">{price(product.approxPriceJOD, t)}</span>
+                {basketKeys.has(product.id) ? (
+                  <Link to="/basket" className="icon-btn" aria-label={t('buy.inBasket')}>
+                    <Check size={18} />
+                  </Link>
+                ) : (
+                  <button type="button" className="icon-btn icon-btn-add" onClick={() => addProduct(product.id)} aria-label={t('buy.add')}>
+                    <Plus size={18} />
+                  </button>
+                )}
               </div>
             ))}
           </div>
+          <button type="button" className="btn btn-ghost btn-block btn-sm" onClick={() => setTab('shops')}>
+            <ShoppingCart size={16} /> {t('shops.browseAll')}
+          </button>
         </section>
+      )}
+      </>
       )}
 
       <AdBanner placement="places" />

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { MessageCircle, Send, UserRound, X } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
 import { nutritionistReply, QUICK } from '../lib/nutritionistBot.js';
-import { weeklyGutScore } from '../lib/gutScore.js';
 import { getProfile } from '../lib/storage.js';
 import { isScreeningEligible } from '../lib/eligibility.js';
 
@@ -23,13 +22,8 @@ export default function NutritionChat() {
   }, [open, messages, typing]);
 
   function ctx() {
-    const gut = weeklyGutScore();
     const profile = getProfile() || {};
     return {
-      score: gut.score,
-      meat: gut.meatCount,
-      fiber: gut.fiberDays,
-      scans: gut.scanCount,
       eligible: isScreeningEligible(),
       age: Number(profile.age) || 0,
       name: (profile.name || '').trim(),

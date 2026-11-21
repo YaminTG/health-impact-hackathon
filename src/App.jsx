@@ -10,7 +10,6 @@ import Home from './pages/Home.jsx';
 import Scan from './pages/Scan.jsx';
 import Result from './pages/Result.jsx';
 import Alternatives from './pages/Alternatives.jsx';
-import GutScore from './pages/GutScore.jsx';
 // Less-used screens: loaded on demand (smaller first download; all are still
 // precached by the service worker, so they work offline)
 const FitKit = lazy(() => import('./pages/FitKit.jsx'));
@@ -26,6 +25,8 @@ const Family = lazy(() => import('./pages/Family.jsx'));
 const ShoppingList = lazy(() => import('./pages/ShoppingList.jsx'));
 const Advertise = lazy(() => import('./pages/Advertise.jsx'));
 const Order = lazy(() => import('./pages/Order.jsx'));
+const Basket = lazy(() => import('./pages/Basket.jsx'));
+const Store = lazy(() => import('./pages/Store.jsx'));
 
 function RouteLoading() {
   return (
@@ -46,6 +47,9 @@ function ScrollToTop() {
   return null;
 }
 
+// The nutritionist chat bubble only appears on the Home screen.
+const showChat = (pathname) => pathname === '/';
+
 export default function App() {
   const { pathname } = useLocation();
   const needsOnboarding = !getProfile() && !OPEN_ROUTES.includes(pathname);
@@ -64,7 +68,6 @@ export default function App() {
           <Route path="/scan" element={<Scan />} />
           <Route path="/result/:id" element={<Result />} />
           <Route path="/alternatives/:id" element={<Alternatives />} />
-          <Route path="/gut-score" element={<GutScore />} />
           <Route path="/fit-kit" element={<FitKit />} />
           <Route path="/about" element={<About />} />
           <Route path="/settings" element={<Settings />} />
@@ -78,12 +81,14 @@ export default function App() {
           <Route path="/shopping-list" element={<ShoppingList />} />
           <Route path="/advertise" element={<Advertise />} />
           <Route path="/order/:id" element={<Order />} />
+          <Route path="/basket" element={<Basket />} />
+          <Route path="/store/:id" element={<Store />} />
           <Route path="/nutritionist" element={<Nutritionist />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </Suspense>
       )}
-      {pathname !== '/onboarding' && pathname !== '/nutritionist' && <NutritionChat />}
+      {showChat(pathname) && <NutritionChat />}
     </>
   );
 }

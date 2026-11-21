@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TriangleAlert, ShieldCheck, ShieldQuestion, ChevronLeft, ChevronRight, Lightbulb, Tractor, Leaf, Wheat, Milk, Fish, Store, Pill, Flower2, Check, UtensilsCrossed, ShoppingBasket } from 'lucide-react';
+import { TriangleAlert, ShieldCheck, ShieldQuestion, ChevronLeft, ChevronRight, Lightbulb, Tractor, Leaf, Wheat, Milk, Fish, Store, Pill, Flower2, Check, UtensilsCrossed, ShoppingBasket, CircleCheck, X, Repeat } from 'lucide-react';
 import { useI18n } from '../i18n/index.jsx';
 import ProductImage from './ProductImage.jsx';
+import { addToBasket, setScanDecision } from '../lib/storage.js';
+import { basketEntryFromScan } from '../lib/market.js';
 
 export const VENDOR_ICON = {
   farm: Tractor,
@@ -75,12 +77,12 @@ export function CarcinogenPanel({ findings, unknown, food, dish }) {
 }
 
 /** One clickable substitute; opens the Order screen. */
-export function SubstituteCard({ item }) {
+export function SubstituteCard({ item, fromScanId }) {
   const { t, pick, dir } = useI18n();
   const Icon = VENDOR_ICON[item.vendor?.type] || Store;
   const Chevron = dir === 'rtl' ? ChevronLeft : ChevronRight;
   return (
-    <Link to={`/order/${item.id}`} className="card sub-card">
+    <Link to={`/order/${item.id}${fromScanId ? `?from=${encodeURIComponent(fromScanId)}` : ''}`} className="card sub-card">
       <span className="alt-emoji">
         <ProductImage product={item.product || item} size="md" />
       </span>
@@ -117,7 +119,7 @@ export function SubstituteCard({ item }) {
 const FIRST_SHOWN = 4;
 
 /** "Recommended products instead" list; every card opens the Order screen. */
-export function SubstituteList({ items, reason, count = 0 }) {
+export function SubstituteList({ items, reason, count = 0, fromScanId }) {
   const { t } = useI18n();
   const [all, setAll] = useState(false);
   if (!items.length) return null;
@@ -132,7 +134,7 @@ export function SubstituteList({ items, reason, count = 0 }) {
       </p>
       <div className="sub-list">
         {shown.map((it) => (
-          <SubstituteCard key={it.id} item={it} />
+          <SubstituteCard key={it.id} item={it} fromScanId={fromScanId} />
         ))}
       </div>
       {items.length > FIRST_SHOWN && (
@@ -140,6 +142,67 @@ export function SubstituteList({ items, reason, count = 0 }) {
           {all ? t('subs.less') : t('subs.more', { n: items.length - FIRST_SHOWN })}
         </button>
       )}
+    </section>
+  );
+}
+
+/** "Buying this?" on the result screen. Scanning alone never counts as buying. */
+export function BuyChoice({ scan, risky }) {
+  const { t, pick } = useI18n();
+  const [decision, setDecision] = useState(scan.decision || null);
+
+  function choose(d) {
+    if (d === 'basket') addToBasket(basketEntryFromScan(scan));
+    setScanDecision(scan.id, d);
+    setDecision(d);
+  }
+
+  if (decision === 'swapped')
+    return (
+      <section className="card buy-choice buy-done buy-swapped">
+        <p>
+          <Repeat size={18} /> {t('swap.chosen', { name: pick({ nameEn: scan.swapNameEn, nameAr: scan.swapNameAr }) })}
+        </p>
+        <Link to="/basket" className="btn btn-secondary btn-sm">
+          <ShoppingBasket size={16} /> {t('buy.openBasket')}
+        </Link>
+      </section>
+    );
+
+  if (decision === 'basket')
+    return (
+      <section className="card buy-choice buy-done">
+        <p>
+          <CircleCheck size={18} /> {t(risky ? 'buy.addedRisky' : 'buy.added')}
+        </p>
+        <Link to="/basket" className="btn btn-secondary btn-sm">
+          <ShoppingBasket size={16} /> {t('buy.openBasket')}
+        </Link>
+      </section>
+    );
+
+  if (decision === 'skip')
+    return (
+      <section className="card buy-choice buy-done">
+        <p className="muted">{t('buy.skipped')}</p>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={() => choose('basket')}>
+          <ShoppingBasket size={16} /> {t('buy.add')}
+        </button>
+      </section>
+    );
+
+  return (
+    <section className="card buy-choice">
+      <h2 className="section-title">{t('buy.question')}</h2>
+      <p className="muted small">{t('buy.help')}</p>
+      <div className="row">
+        <button type="button" className="btn btn-primary btn-grow" onClick={() => choose('basket')}>
+          <ShoppingBasket size={18} /> {t('buy.add')}
+        </button>
+        <button type="button" className="btn btn-ghost btn-grow" onClick={() => choose('skip')}>
+          <X size={18} /> {t('buy.skip')}
+        </button>
+      </div>
     </section>
   );
 }

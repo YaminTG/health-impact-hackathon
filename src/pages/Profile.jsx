@@ -1,16 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  UserRound, Pencil, Save, X, Download, Trash2, Wheat, Beef, CalendarCheck, Stethoscope, Scale, Minus, Plus,
+  UserRound, Pencil, Save, X, Download, Trash2, CalendarCheck, Stethoscope, Scale,
   ScanLine, Settings as SettingsIcon, Crown, Users, ShoppingBasket,
 } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import ScanRow from '../components/ProductRow.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import {
-  getProfile, saveProfile, getGoals, getScans, deleteScan, getFitRequests, exportData, isPremium,
+  getProfile, saveProfile, getScans, deleteScan, getFitRequests, exportData, isPremium,
 } from '../lib/storage.js';
-import { weeklyGutScore, weeklyHistory, scoreBand } from '../lib/gutScore.js';
 import { scoreProduct, isFood } from '../lib/scoring.js';
 import { screeningStatus } from '../lib/screening.js';
 import dashboard from '../data/dashboard.json';
@@ -38,20 +37,6 @@ function Choice({ value, onChange, options }) {
   );
 }
 
-function Stepper({ value, onChange, min, max }) {
-  return (
-    <div className="stepper">
-      <button type="button" className="icon-btn" onClick={() => onChange(Math.max(min, value - 1))} aria-label="−">
-        <Minus size={16} />
-      </button>
-      <strong>{value}</strong>
-      <button type="button" className="icon-btn" onClick={() => onChange(Math.min(max, value + 1))} aria-label="+">
-        <Plus size={16} />
-      </button>
-    </div>
-  );
-}
-
 export default function Profile() {
   const { t, pick, lang } = useI18n();
   const { hash } = useLocation();
@@ -70,9 +55,6 @@ export default function Profile() {
     if (hash) setTimeout(() => document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
   }, [hash]);
 
-  const goals = getGoals(profile);
-  const gut = useMemo(() => weeklyGutScore(scans), [scans]);
-  const history = useMemo(() => weeklyHistory(6, scans), [scans]);
   const status = screeningStatus(profile);
   const bmi = bmiInfo(profile.heightCm, profile.weightKg);
   const fitRequests = getFitRequests();
@@ -128,7 +110,6 @@ export default function Profile() {
 
   const yn = (v) => (v === 'yes' ? t('common.yes') : v === 'no' ? t('common.no') : t('common.notSure'));
   const areaName = AREAS.find((a) => a.en === profile.area);
-  const maxHist = 100;
 
   return (
     <Page title={t('profile.title')} back>
@@ -241,7 +222,6 @@ export default function Profile() {
         <h2 className="section-title">{t('profile.stats')}</h2>
         <div className="stat-grid">
           <div className="stat"><ScanLine size={22} /><strong>{scans.length}</strong><span>{t('profile.totalScans')}</span></div>
-          <div className={`stat stat-${scoreBand(gut.score)}`}><Wheat size={22} /><strong>{gut.score}</strong><span>{t('profile.thisWeek')}</span></div>
           <div className="stat">
             <span className="tier-mini">
               <i className="tier-dot tier-red" /> {tierCounts.red}
@@ -250,46 +230,6 @@ export default function Profile() {
             </span>
             <span>{t('profile.byTier')}</span>
           </div>
-        </div>
-      </section>
-
-      {/* ---------- trend ---------- */}
-      <section className="card">
-        <h2 className="section-title">{t('profile.trend')}</h2>
-        <div className="trend profile-trend">
-          {history.map((w, i) => (
-            <div key={w.end} className="trend-col" title={`${w.scanCount}`}>
-              <span className={`trend-score band-text-${scoreBand(w.score)}`}>{w.scanCount ? w.score : '–'}</span>
-              <span className={`trend-bar band-bg-${scoreBand(w.score)}`} style={{ height: `${w.scanCount ? (w.score / maxHist) * 75 : 4}%` }} />
-              <span>{i === history.length - 1 ? t('profile.now') : dateFmt(w.end, { day: 'numeric', month: 'short' })}</span>
-            </div>
-          ))}
-        </div>
-        <p className="muted small">{t('profile.trendNote')}</p>
-      </section>
-
-      {/* ---------- goals ---------- */}
-      <section className="card section">
-        <h2 className="section-title">{t('profile.goals')}</h2>
-        <div className="goal">
-          <div className="goal-head">
-            <span><Wheat size={18} /> {t('profile.goalFiber')}</span>
-            <Stepper value={goals.fiberDays} min={1} max={7} onChange={(v) => update({ goals: { ...goals, fiberDays: v } })} />
-          </div>
-          <div className="progress"><span style={{ inlineSize: `${Math.min(100, (gut.fiberDays / goals.fiberDays) * 100)}%` }} /></div>
-          <small className="muted">{t('profile.goalFiberProgress', { n: gut.fiberDays, goal: goals.fiberDays })}</small>
-        </div>
-        <div className="goal">
-          <div className="goal-head">
-            <span><Beef size={18} /> {t('profile.goalMeat')}</span>
-            <Stepper value={goals.meatMax} min={0} max={7} onChange={(v) => update({ goals: { ...goals, meatMax: v } })} />
-          </div>
-          <div className={`progress ${gut.meatCount > goals.meatMax ? 'progress-over' : ''}`}>
-            <span style={{ inlineSize: `${Math.min(100, goals.meatMax ? (gut.meatCount / goals.meatMax) * 100 : gut.meatCount ? 100 : 0)}%` }} />
-          </div>
-          <small className={gut.meatCount > goals.meatMax ? 'error-text' : 'muted'}>
-            {t(gut.meatCount > goals.meatMax ? 'profile.goalMeatOver' : 'profile.goalMeatProgress', { n: gut.meatCount, goal: goals.meatMax })}
-          </small>
         </div>
       </section>
 

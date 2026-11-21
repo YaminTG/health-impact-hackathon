@@ -1,10 +1,11 @@
 // Cleaner substitutes (farms, organic co-ops, bakeries, natural care) and the
 // "orderable item" shape used by the Order screen. All sellers are MOCK data.
 import market from '../data/cleanMarket.json';
-import { getAlternatives, getProduct, getShop, containsAlcohol, PRODUCTS } from './catalog.js';
-import { scoreProduct, isFood, swapReasons } from './scoring.js';
+import { getAlternatives, getProduct, getShop, containsAlcohol, PRODUCTS, SHOPS } from './catalog.js';
+import { scoreProduct, isFood, swapReasons, TIER_RANK } from './scoring.js';
 import { findCarcinogens } from './carcinogens.js';
 import { getRestaurant } from './places.js';
+import { getScan, setScanDecision, removeFromBasket } from './storage.js';
 
 export const VENDORS = market.vendors;
 export const MARKET_ITEMS = market.items;
@@ -36,6 +37,7 @@ function fromCatalog(p) {
   return {
     id: p.id,
     source: 'catalog',
+    aisle: aisleFor(p),
     nameEn: p.nameEn,
     nameAr: p.nameAr,
     emoji: p.emoji,
@@ -44,15 +46,42 @@ function fromCatalog(p) {
     kind: p.kind,
     tags: [],
     product: p,
-    vendor: {
-      ...shop,
-      type: shop.id === 's4' || shop.id === 's5' ? 'pharmacy' : 'shop',
-      deliveryFeeJOD: 1,
-      deliveryDays: 0,
-      pickup: true,
-    },
+    vendor: shopVendorById[shop.id] || { ...shop, type: 'shop', deliveryFeeJOD: 1, deliveryDays: 0, pickup: true },
   };
 }
+
+// Partner shops (supermarkets, pharmacies) as sellers with a delivery offer.
+const SHOP_VENDORS = SHOPS.map((s) => ({
+  ...s,
+  type: s.id === 's4' || s.id === 's5' ? 'pharmacy' : 'shop',
+  deliveryFeeJOD: 1,
+  deliveryDays: 0,
+  pickup: true,
+  freeDeliveryOverJOD: 15,
+}));
+const shopVendorById = Object.fromEntries(SHOP_VENDORS.map((v) => [v.id, v]));
+
+export const getVendor = (id) => vendorById[id] || shopVendorById[id] || null;
+
+/** Everything a seller sells, as orderable items (healthiest first for shops). */
+export function vendorItems(vendorId) {
+  if (vendorById[vendorId]) return MARKET_ITEMS.filter((i) => i.vendorId === vendorId).map(fromMarket);
+  if (!shopVendorById[vendorId]) return [];
+  return PRODUCTS.filter((p) => p.shopIds?.includes(vendorId) && !containsAlcohol(p))
+    .map((p) => ({ ...fromCatalog(p), vendor: shopVendorById[vendorId] }))
+    .sort((a, b) => TIER_RANK[scoreProduct(a.product).tier] - TIER_RANK[scoreProduct(b.product).tier]);
+}
+
+/** Every store people can order groceries from: partner shops first, then farms & co. */
+export function allStores() {
+  return [...SHOP_VENDORS, ...VENDORS].map((v) => ({ ...v, itemCount: vendorItems(v.id).length })).filter((v) => v.itemCount > 0);
+}
+
+const AISLE_OF = {
+  processed_meat: 'meat', red_meat: 'meat', refined_grain: 'bread', wholegrain: 'bread',
+  sugary_drink: 'drinks', dairy: 'dairy', snack: 'snacks', other: 'pantry',
+};
+const aisleFor = (p) => (p.kind && p.kind !== 'food' ? (p.kind === 'cosmetic' ? 'beauty' : 'home') : AISLE_OF[p.category] || 'pantry');
 
 /** Restaurant dishes are ordered as "<restaurantId>--<dishId>". */
 export const dishOrderId = (restaurantId, dishId) => `${restaurantId}--${dishId}`;
@@ -139,6 +168,63 @@ export function recommendReason(product, findings) {
 
 /** Should the result screen recommend other products? (risky or has carcinogens) */
 export const needsSubstitutes = (product, findings) => recommendReason(product, findings) !== null;
+
+// ---- basket entries -----------------------------------------------------------
+/** From an orderable item (substitute, store product, restaurant dish). */
+export function basketEntryFromItem(item, qty = 1) {
+  const v = item.verdict || (item.source === 'market' ? { tier: 'green' } : scoreProduct(item.product || item));
+  return {
+    key: item.id,
+    itemId: item.id,
+    nameEn: item.nameEn,
+    nameAr: item.nameAr,
+    emoji: item.emoji,
+    imageUrl: item.product?.imageUrl || null,
+    priceJOD: Number(item.priceJOD) || null,
+    vendorId: item.vendor?.id || null,
+    tier: v.unknown ? 'unknown' : v.tier,
+    qty,
+  };
+}
+
+/** From a scanned product; it is orderable only if one of our stores sells it. */
+export function basketEntryFromScan(scan) {
+  const p = scan.product;
+  const item = p.id ? getOrderable(p.id) : null;
+  if (item) return { ...basketEntryFromItem(item), scanId: scan.id };
+  const v = scoreProduct(p);
+  return {
+    key: `scan-${p.barcode || scan.id}`,
+    itemId: null,
+    nameEn: p.nameEn || p.productName,
+    nameAr: p.nameAr || p.productNameAr,
+    productName: p.productName,
+    emoji: p.emoji,
+    imageUrl: p.imageUrl || null,
+    priceJOD: null,
+    vendorId: null,
+    tier: v.unknown ? 'unknown' : v.tier,
+    scanId: scan.id,
+    qty: 1,
+  };
+}
+
+/**
+ * The user ordered or basket-added `item` instead of the product they scanned:
+ * mark the scan as a healthier swap and take the scanned product out of the basket.
+ */
+export function recordSwap(scanId, item) {
+  const scan = scanId ? getScan(scanId) : null;
+  if (!scan || scan.product?.id === item.id) return false;
+  setScanDecision(scanId, 'swapped', {
+    swapItemId: item.id,
+    swapNameEn: item.nameEn,
+    swapNameAr: item.nameAr,
+    swapTs: Date.now(),
+  });
+  removeFromBasket(basketEntryFromScan(scan).key);
+  return true;
+}
 
 // ---- "Other things you can change": i18n keys, most relevant first ----------
 const TIP_ORDER = [

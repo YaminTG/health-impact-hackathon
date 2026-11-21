@@ -149,15 +149,18 @@ export default function PhotoScanner({ onDone, initialKind = '' }) {
             <span>{t('crop.help')}</span>
           </div>
           <CropBox src={preview} value={crop} onChange={setCrop} label={t('crop.label')} />
-          <button className="btn btn-primary btn-block btn-lg" onClick={() => runOcr(true)}>
-            <Crop size={18} /> {t('crop.read')}
-          </button>
           <div className="row">
             <button className="btn btn-secondary btn-grow" onClick={() => runOcr(false)}>
               <Maximize size={18} /> {t('crop.whole')}
             </button>
             <button className="btn btn-ghost btn-grow" onClick={openPicker}>
               <RotateCcw size={18} /> {t('ocr.retake')}
+            </button>
+          </div>
+          {/* always visible at the bottom of the screen */}
+          <div className="sticky-action">
+            <button className="btn btn-primary btn-block btn-lg" onClick={() => runOcr(true)}>
+              <Crop size={18} /> {t('crop.read')}
             </button>
           </div>
         </>
@@ -282,10 +285,6 @@ export default function PhotoScanner({ onDone, initialKind = '' }) {
                 )}
               </div>
             )}
-
-            <button className="btn btn-primary btn-block btn-lg" onClick={analyze} disabled={!text.trim() || needsKindChoice}>
-              <Sparkles size={18} /> {t('ocr.analyze')}
-            </button>
           </div>
 
           {preview && (
@@ -302,6 +301,18 @@ export default function PhotoScanner({ onDone, initialKind = '' }) {
             )}
             <button className="btn btn-ghost btn-grow" onClick={openPicker}>
               <Camera size={18} /> {preview ? t('ocr.retake') : t('ocr.take')}
+            </button>
+          </div>
+
+          {/* always visible at the bottom of the screen */}
+          <div className="sticky-action">
+            {text.trim() && !needsKindChoice && (
+              <span className="sticky-preview">
+                <RiskBadge verdict={verdict} size="sm" />
+              </span>
+            )}
+            <button className="btn btn-primary btn-block btn-lg" onClick={analyze} disabled={!text.trim() || needsKindChoice}>
+              <Sparkles size={18} /> {t(needsKindChoice ? 'ocr.chooseKindFirst' : !text.trim() ? 'ocr.addTextFirst' : 'ocr.analyze')}
             </button>
           </div>
         </>

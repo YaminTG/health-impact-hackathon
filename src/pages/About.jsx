@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, ShieldCheck, Lock } from 'lucide-react';
+import { LayoutDashboard, ShieldCheck, Lock, Megaphone } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import Disclaimer from '../components/Disclaimer.jsx';
 import { useI18n } from '../i18n/index.jsx';
@@ -74,6 +74,9 @@ export default function About() {
 
       <Link to="/dashboard" className="btn btn-secondary btn-block">
         <LayoutDashboard size={18} /> {t('about.dashboard')}
+      </Link>
+      <Link to="/advertise" className="btn btn-ghost btn-block">
+        <Megaphone size={18} /> {t('adv.title')}
       </Link>
     </Page>
   );

@@ -6,7 +6,7 @@ You scan a food product (barcode or a photo of the ingredient label). The app th
 
 - gives a colorectal-cancer (CRC) diet-risk verdict based on published evidence
 - suggests healthier swaps at partner shops
-- tracks your weekly **Gut Score**
+- names carcinogens found and lets you order cleaner products
 - nudges eligible users toward **free FIT screening**
 
 It is Arabic-first (RTL), with an English toggle.
@@ -74,12 +74,11 @@ Non-food rules (in `src/lib/scoring.js`, `CONCERN_RULES`). Keywords live in `src
 | EU-banned parabens (isopropyl-, isobutyl-, phenyl-, benzyl-, pentyl-) | 🟠 Concern | EU Reg. 358/2014 |
 | None found | 🟢 | "No ingredients of concern found". If there is no ingredient list, the result says it **couldn't check**. |
 
-Every non-food result states: *IARC classes describe hazard, not the risk at cosmetic doses. No link to colorectal cancer is claimed.* Non-food scans do **not** count toward the Gut Score.
-
+Every non-food result states: *IARC classes describe hazard, not the risk at cosmetic doses. No link to colorectal cancer is claimed.*
 **Places** (`/places`):
 - 9 **mock partner restaurants with invented names** (`src/data/restaurants.json`) and a 30-dish catalog of common Jordanian dishes (`src/data/dishes.json`). Each dish is scored by the same food rules.
 - Restaurant score = the average of its dishes: protective 1, neutral 0.8, amber 0.35, red 0.
-- **Log** a dish to add it to your Gut Score. Its result page then suggests healthier dishes at the same restaurant.
+- Each dish shows its price and can be ordered.
 - Real restaurants are intentionally not rated. That would need real menu data and their consent.
 
 ## How a scan works
@@ -135,9 +134,9 @@ Guard rails:
 
 All Arabic and English keywords live in **`src/lib/dictionary.js`**. That covers nitrites, processed meat, red meat, wholegrain, refined grain, sugar, drinks, flavour enhancers, ultra-processing markers, dairy, snacks, and the Open Food Facts category mapping. Text is normalised before matching (Arabic diacritics, alef/ya/ta-marbuta variants, Arabic-Indic digits), so you can add plain keywords.
 
-### Weekly Gut Score
+### No personal diet score
 
-Covers the last 7 days: `100 − 10 × (processed/red-meat scans) + 5 × (days with a wholegrain/high-fibre scan)`, clamped to 0–100. The tip targets your weakest area.
+The app does not score or track what a user eats: a scan doesn't prove the food was eaten. Scans and orders are only shown to KHCC/MOH as anonymized, aggregated patterns on `/dashboard` (what people scan, carcinogen flags, what they order, risky scans followed by an order).
 
 ### Screening nudge
 
@@ -154,7 +153,6 @@ Shown when **age ≥ 45 or family history = yes**, or when **Demo mode** is on (
 
 1. Open the app, answer the 3 onboarding questions (any age), then go to **⚙️ Settings**.
 2. Turn on **Demo mode**, so the screening nudge always appears.
-3. Optional: tap **Load a sample week of scans** so the Gut Score looks lived-in.
 
 To start completely fresh, use **Reset everything**.
 
@@ -164,14 +162,14 @@ To start completely fresh, use **Reset everything**.
 | 0:15 | **Scan → Demo products → لانشون (Luncheon meat)** | Result: 🔴 **RED**, "linked to higher risk with regular intake". Scroll to **Why?**: IARC Group 1, *Established*, with the source. "Our AI doesn't judge. Fixed, transparent evidence rules do." |
 | 0:40 | **See better alternatives** | Tuna, chickpeas and labaneh, at similar prices, each with a partner shop in Khalda or Weibdeh and its distance. |
 | 0:55 | Back → **Scan → Wholewheat bread** (or type barcode `6251000000066`) | 🟢 **Healthier option**: "Wholegrains probably protect; 90 g a day is linked to about 17% lower risk." |
-| 1:10 | **Gut Score** tab | Score ring, meat count, fibre days, 7-day strip and the tip of the week. |
+| 1:10 | Tap a recommended product → **Order** | Quantity, delivery or pick-up, clear total, cash on delivery. |
 | 1:25 | **Screening nudge** on the same screen | "Diet lowers risk, but only screening finds polyps early." Tap **Request a free FIT kit** to show the confirmation, then **Share with family** to show the share sheet with a message for a parent. |
 | 1:45 | Tap **EN** at the top | The whole app switches to English (LTR). |
 | 1:50 | Open **`/dashboard`** (About → dashboard) | An anonymized view for KHCC/MOH: scans by area, high-risk diet patterns, and screening requests by Amman neighbourhood. |
 
 Optional extras that always work (offline):
 - **Cosmetics:** Scan → Demo products → **Cosmetics** tab → *Traditional kohl powder*. Result: 🔴 lead, with the IARC source and the "hazard, not risk" caveat. Then **See better alternatives** shows the iron-oxide kohl at a partner pharmacy.
-- **Places:** tap the **Places** tab and then the **فلافل** chip. Places are ranked by menu healthiness. Open one, **Log** a dish, and see it count in your Gut Score.
+- **Places:** tap the **Places** tab and then the **فلافل** chip. Places are ranked by menu healthiness. Open one and order a dish.
 
 Optional live extras (best-effort, needs internet):
 
@@ -188,13 +186,13 @@ Demo barcodes (placeholders) run from `6251000000011` to `6251000000202`. See `s
 ```
 public/             PWA icons (generated by scripts/gen-icons.mjs), favicon
 src/
-  pages/            Onboarding, Home, Scan, Result, Alternatives, GutScore,
+  pages/            Onboarding, Home, Scan, Result, Alternatives, Order,
                     FitKit, WarningSigns, Dashboard, About, Settings, Places, Place
   components/       Layout (top bar + bottom nav), RiskBadge, ScreeningNudge,
                     Disclaimer, ScoreRing, BarChart, ProductRow,
                     BarcodeScanner (ZXing), PhotoScanner (Tesseract)
   lib/              scoring.js (verdict), classify.js + dictionary.js (extraction),
-                    openFoodFacts.js, ocr.js, gutScore.js, eligibility.js,
+                    openFoodFacts.js, ocr.js, carcinogens.js, market.js, eligibility.js,
                     catalog.js, storage.js, share.js
   data/             products.json (20 food + 13 cosmetic/household seed products), shops.json (mock shops + pharmacies),
                     dishes.json, restaurants.json (mock), dashboard.json (mock)

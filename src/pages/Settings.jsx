@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, RotateCcw, Trash2, Sparkles, UserPen } from 'lucide-react';
+import { LayoutDashboard, RotateCcw, Trash2, UserPen } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { getProfile, getSettings, saveSettings, clearScans, resetAll } from '../lib/storage.js';
-import { seedSampleWeek } from '../lib/gutScore.js';
 
 export default function Settings() {
   const { t, lang, setLang } = useI18n();
@@ -63,15 +62,6 @@ export default function Settings() {
       )}
 
       <div className="btn-stack">
-        <button
-          className="btn btn-secondary btn-block"
-          onClick={() => {
-            seedSampleWeek();
-            setMsg(t('set.seeded'));
-          }}
-        >
-          <Sparkles size={18} /> {t('set.seed')}
-        </button>
         {msg && <p className="toast-inline">{msg}</p>}
         <Link to="/dashboard" className="btn btn-secondary btn-block">
           <LayoutDashboard size={18} /> {t('about.dashboard')}

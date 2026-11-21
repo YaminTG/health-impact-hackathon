@@ -1,29 +1,31 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { MapPin, Minus, Plus, Truck, Store, Banknote, CircleCheck, Clock, ShoppingBag } from 'lucide-react';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { MapPin, Minus, Plus, Store, Banknote, CircleCheck, Clock, ShoppingBasket, Repeat } from 'lucide-react';
+import { CheckoutFields, useCheckout, checkoutDetails, whereWhen } from '../components/Checkout.jsx';
 import { Page } from '../components/Layout.jsx';
 import RiskBadge from '../components/RiskBadge.jsx';
 import ProductImage from '../components/ProductImage.jsx';
 import { VENDOR_ICON, price } from '../components/CleanSwaps.jsx';
 import { useI18n } from '../i18n/index.jsx';
-import { getOrderable } from '../lib/market.js';
+import { getOrderable, basketEntryFromItem, recordSwap, getVendor } from '../lib/market.js';
 import { scoreProduct } from '../lib/scoring.js';
-import { addOrder, getProfile } from '../lib/storage.js';
-import dashboard from '../data/dashboard.json';
+import { addOrder, addToBasket, getScan } from '../lib/storage.js';
+import { productName } from '../components/ProductRow.jsx';
 
 const MAX_QTY = 20;
 
 export default function Order() {
   const { id } = useParams();
+  const [params] = useSearchParams();
+  const fromScanId = params.get('from');
+  const fromScan = fromScanId ? getScan(fromScanId) : null;
   const { t, pick } = useI18n();
   const item = getOrderable(id);
-  const areas = dashboard.scansByArea;
-  const profileArea = getProfile()?.area;
   const [qty, setQty] = useState(1);
-  const [method, setMethod] = useState('delivery');
-  const [area, setArea] = useState(() => (areas.some((a) => a.en === profileArea) ? profileArea : areas[0].en));
-  const [address, setAddress] = useState('');
+  const [checkout, setCheckout] = useCheckout();
+  const method = checkout.method;
   const [done, setDone] = useState(null);
+  const [added, setAdded] = useState(false);
 
   if (!item)
     return (
@@ -42,14 +44,11 @@ export default function Order() {
   const VIcon = VENDOR_ICON[vendor.type] || Store;
   const unit = Number(item.priceJOD) || 0;
   const subtotal = unit * qty;
-  const fee = method === 'delivery' ? Number(vendor.deliveryFeeJOD) || 0 : 0;
+  const freeDelivery = vendor.freeDeliveryOverJOD && subtotal >= vendor.freeDeliveryOverJOD;
+  const fee = method === 'delivery' && !freeDelivery ? Number(vendor.deliveryFeeJOD) || 0 : 0;
   const total = subtotal + fee;
-  const when =
-    method === 'pickup'
-      ? t('order.whenPickup')
-      : vendor.deliveryDays
-        ? t('order.whenDays', { n: vendor.deliveryDays })
-        : t('order.whenToday');
+  const arrives = method === 'pickup' ? t('order.whenPickup') : vendor.deliveryDays ? t('order.whenDays', { n: vendor.deliveryDays }) : t('order.whenToday');
+  const when = `${arrives} · ${whereWhen(checkout, t, pick)}`;
 
   if (done)
     return (
@@ -58,6 +57,11 @@ export default function Order() {
           <CircleCheck size={56} className="success-icon" />
           <h1>{t('order.successTitle')}</h1>
           <p>{t('order.successText', { vendor: pick(vendor) })}</p>
+          {fromScan && (
+            <p className="swap-note">
+              <Repeat size={16} /> {t('swap.counted', { name: productName(fromScan.product, pick, t) })}
+            </p>
+          )}
           <p className="ref">{done.ref}</p>
           <div className="order-summary">
             <div>
@@ -105,6 +109,11 @@ export default function Order() {
         </div>
       </section>
 
+      {fromScan && (
+        <p className="swap-note">
+          <Repeat size={16} /> {t('swap.instead', { name: productName(fromScan.product, pick, t) })}
+        </p>
+      )}
       {item.source !== 'market' && <RiskBadge verdict={v} size="sm" />}
       {pick(item, 'desc') && <p>{pick(item, 'desc')}</p>}
       {item.tags.length > 0 && (
@@ -127,6 +136,11 @@ export default function Order() {
             {t(`vendor.${vendor.type}`)} · <MapPin size={13} /> {pick(vendor, 'area')} · {t('alt.away', { d: vendor.distanceKm })}
           </p>
         </div>
+        {item.source !== 'restaurant' && getVendor(vendor.id) && (
+          <Link to={`/store/${vendor.id}`} className="btn btn-ghost btn-sm vendor-visit">
+            <Store size={16} /> {t('store.visit')}
+          </Link>
+        )}
       </section>
 
       <form
@@ -140,15 +154,15 @@ export default function Order() {
               nameAr: item.nameAr,
               vendorId: vendor.id,
               qty,
-              method,
-              area: method === 'delivery' ? area : null,
-              address: method === 'delivery' ? address.trim() : null,
+              ...checkoutDetails(checkout),
               unitJOD: unit,
               feeJOD: fee,
               totalJOD: total,
               payment: 'cash',
+              fromScanId: fromScan ? fromScanId : null,
             }),
           );
+          if (fromScan) recordSwap(fromScanId, item);
         }}
       >
         <div className="field">
@@ -164,40 +178,7 @@ export default function Order() {
           </div>
         </div>
 
-        <fieldset className="field">
-          <legend>{t('order.how')}</legend>
-          <div className="choice-list">
-            <button type="button" className={`choice${method === 'delivery' ? ' selected' : ''}`} onClick={() => setMethod('delivery')} aria-pressed={method === 'delivery'}>
-              <Truck size={18} /> {t('order.delivery')} · {price(vendor.deliveryFeeJOD, t)}
-            </button>
-            {vendor.pickup && (
-              <button type="button" className={`choice${method === 'pickup' ? ' selected' : ''}`} onClick={() => setMethod('pickup')} aria-pressed={method === 'pickup'}>
-                <ShoppingBag size={18} /> {t('order.pickup')} · {t('order.free')}
-              </button>
-            )}
-          </div>
-        </fieldset>
-
-        {method === 'delivery' && (
-          <>
-            <label className="field">
-              <span>{t('fit.area')}</span>
-              <select className="input" value={area} onChange={(e) => setArea(e.target.value)}>
-                {areas.map((a) => (
-                  <option key={a.en} value={a.en}>
-                    {pick(a)}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="field">
-              <span>
-                {t('order.address')} <small className="muted">({t('order.optional')})</small>
-              </span>
-              <input className="input" value={address} maxLength={120} onChange={(e) => setAddress(e.target.value)} placeholder={t('order.addressHint')} />
-            </label>
-          </>
-        )}
+        <CheckoutFields value={checkout} onChange={setCheckout} pickup={vendor.pickup} deliveryFee={price(vendor.deliveryFeeJOD, t)} />
 
         <div className="card order-summary">
           <div>
@@ -222,6 +203,23 @@ export default function Order() {
         <button className="btn btn-primary btn-block btn-lg" type="submit">
           {t('order.place', { total: price(total, t) })}
         </button>
+        {added ? (
+          <Link to="/basket" className="btn btn-secondary btn-block">
+            <CircleCheck size={18} /> {t('buy.inBasket')}
+          </Link>
+        ) : (
+          <button
+            type="button"
+            className="btn btn-secondary btn-block"
+            onClick={() => {
+              addToBasket({ ...basketEntryFromItem(item, qty), fromScanId: fromScan ? fromScanId : null });
+              if (fromScan) recordSwap(fromScanId, item);
+              setAdded(true);
+            }}
+          >
+            <ShoppingBasket size={18} /> {t('buy.addQty', { n: qty })}
+          </button>
+        )}
       </form>
     </Page>
   );

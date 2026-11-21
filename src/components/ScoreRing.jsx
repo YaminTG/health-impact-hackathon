@@ -1,4 +1,4 @@
-import { scoreBand } from '../lib/gutScore.js';
+const scoreBand = (score) => (score >= 75 ? 'green' : score >= 50 ? 'amber' : 'red');
 
 export default function ScoreRing({ score, size = 120, label }) {
   const stroke = size * 0.1;

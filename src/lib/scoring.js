@@ -147,7 +147,7 @@ export function scoreProduct(product) {
   return { kind: 'food', tier, protective: tier === 'green' && protective, rules: sorted, primary, staple };
 }
 
-/** Flags used by the Weekly Gut Score */
+/** Diet flags used to explain swaps */
 export function dietFlags(product) {
   if (!isFood(product)) return { meat: false, processedMeat: false, fiber: false, sugar: false, refined: false };
   const { rules } = scoreProduct(product);

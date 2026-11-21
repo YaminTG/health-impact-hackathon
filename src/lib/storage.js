@@ -10,7 +10,52 @@ const KEYS = {
   family: 'cn.family',
   shopping: 'cn.shopping',
   orders: 'cn.orders',
+  basket: 'cn.basket',
 };
+
+// ---- basket ------------------------------------------------------------------
+// Entry: { key, itemId (orderable id or null), nameEn, nameAr, productName, emoji,
+//          imageUrl, priceJOD (null = price at the shop), tier, scanId, qty, ts }
+export const getBasket = () => read(KEYS.basket, []);
+const notifyBasket = () => {
+  try {
+    window.dispatchEvent(new Event('cn-basket'));
+  } catch {
+    /* ignore */
+  }
+};
+export function addToBasket(entry) {
+  const list = getBasket();
+  const i = list.findIndex((x) => x.key === entry.key);
+  if (i >= 0) list[i] = { ...list[i], qty: Math.min(20, list[i].qty + (entry.qty || 1)) };
+  else list.push({ qty: 1, ...entry, ts: Date.now() });
+  write(KEYS.basket, list);
+  notifyBasket();
+  return list;
+}
+export function setBasketQty(key, qty) {
+  const list = getBasket()
+    .map((x) => (x.key === key ? { ...x, qty } : x))
+    .filter((x) => x.qty > 0);
+  write(KEYS.basket, list);
+  notifyBasket();
+  return list;
+}
+export const removeFromBasket = (key) => setBasketQty(key, 0);
+export function removeManyFromBasket(keys) {
+  const drop = new Set(keys);
+  write(KEYS.basket, getBasket().filter((x) => !drop.has(x.key)));
+  notifyBasket();
+}
+export const basketCount = () => getBasket().reduce((n, x) => n + x.qty, 0);
+
+/**
+ * Record what the user decided for a scan: 'basket' | 'skip' | 'swapped'.
+ * For 'swapped', extra = { swapItemId, swapNameEn, swapNameAr, swapTs }.
+ */
+export function setScanDecision(id, decision, extra = {}) {
+  write(KEYS.scans, getScans().map((s) => (s.id === id ? { ...s, decision, ...extra } : s)));
+}
 
 // ---- orders (demo: nothing is sent to a seller, no payment is taken) --------
 export const getOrders = () => read(KEYS.orders, []);
@@ -80,7 +125,7 @@ function write(key, value) {
 
 // ---- profile -------------------------------------------------------------
 // Profile fields: age, familyHistory, smoker (onboarding) + optional name, area,
-// heightCm, weightKg, goals { fiberDays, meatMax }, screening { date, type }.
+// heightCm, weightKg, screening { date, type }.
 export const getProfile = () => read(KEYS.profile, null);
 /** Merges with the existing profile, so re-running onboarding keeps name/goals/etc. */
 export const saveProfile = (patch) => {
@@ -88,9 +133,6 @@ export const saveProfile = (patch) => {
   write(KEYS.profile, next);
   return next;
 };
-
-export const DEFAULT_GOALS = { fiberDays: 5, meatMax: 2 };
-export const getGoals = (profile = getProfile()) => ({ ...DEFAULT_GOALS, ...(profile?.goals || {}) });
 
 // ---- settings ------------------------------------------------------------
 const DEFAULT_SETTINGS = { lang: 'ar', demoMode: false };
@@ -132,6 +174,7 @@ export function exportData() {
     family: getFamily(),
     shoppingList: getShopping(),
     orders: getOrders(),
+    basket: getBasket(),
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);

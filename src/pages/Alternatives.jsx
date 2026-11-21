@@ -71,7 +71,7 @@ export default function Alternatives() {
               </span>
             </div>
             <Link
-              to={`/order/${p.restaurantId ? dishOrderId(p.restaurantId, alt.id) : alt.id}`}
+              to={`/order/${p.restaurantId ? dishOrderId(p.restaurantId, alt.id) : alt.id}?from=${encodeURIComponent(scan.id)}`}
               className="btn btn-primary btn-sm"
             >
               <ShoppingBag size={16} /> {t('order.ctaPrice', { price: price(alt.approxPriceJOD).replace('≈ ', '') })}

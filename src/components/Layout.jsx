@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { House, ScanBarcode, Gauge, Info, Settings, ChevronLeft, ChevronRight, UtensilsCrossed, UserRound } from 'lucide-react';
-import { getProfile } from '../lib/storage.js';
+import { House, ScanBarcode, Info, Settings, ChevronLeft, ChevronRight, UtensilsCrossed, UserRound, ShoppingBasket } from 'lucide-react';
+import { getProfile, basketCount } from '../lib/storage.js';
 import { useI18n } from '../i18n/index.jsx';
 
 export function TopBar({ title, back }) {
@@ -8,6 +9,16 @@ export function TopBar({ title, back }) {
   const navigate = useNavigate();
   const BackIcon = dir === 'rtl' ? ChevronRight : ChevronLeft;
   const initial = (getProfile()?.name || '').trim().charAt(0).toUpperCase();
+  const [count, setCount] = useState(basketCount);
+  useEffect(() => {
+    const sync = () => setCount(basketCount());
+    window.addEventListener('cn-basket', sync);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener('cn-basket', sync);
+      window.removeEventListener('storage', sync);
+    };
+  }, []);
   return (
     <header className="topbar">
       <div className="topbar-start">
@@ -27,6 +38,10 @@ export function TopBar({ title, back }) {
         <button className="lang-btn" onClick={toggle} aria-label="Language">
           {t('lang.toggle')}
         </button>
+        <Link to="/basket" className="icon-btn basket-btn" aria-label={t('basket.title')}>
+          <ShoppingBasket size={22} />
+          {count > 0 && <span className="basket-count">{count}</span>}
+        </Link>
         <Link to="/profile" className="icon-btn avatar-btn" aria-label={t('profile.title')}>
           {initial ? <span className="avatar avatar-sm">{initial}</span> : <UserRound size={22} />}
         </Link>
@@ -44,7 +59,6 @@ export function BottomNav() {
     { to: '/', icon: House, label: t('nav.home'), end: true },
     { to: '/scan', icon: ScanBarcode, label: t('nav.scan') },
     { to: '/places', icon: UtensilsCrossed, label: t('nav.places') },
-    { to: '/gut-score', icon: Gauge, label: t('nav.gut') },
     { to: '/about', icon: Info, label: t('nav.about') },
   ];
   return (

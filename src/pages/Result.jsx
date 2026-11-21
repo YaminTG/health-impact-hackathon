@@ -15,7 +15,7 @@ import { restaurantAlternatives } from '../lib/places.js';
 import { isScreeningEligible } from '../lib/eligibility.js';
 import { findCarcinogens, nothingToCheck } from '../lib/carcinogens.js';
 import { getCleanSubstitutes, recommendReason, changeTips } from '../lib/market.js';
-import { CarcinogenPanel, SubstituteList, ChangeTips } from '../components/CleanSwaps.jsx';
+import { CarcinogenPanel, SubstituteList, ChangeTips, BuyChoice } from '../components/CleanSwaps.jsx';
 
 function Fact({ label, value }) {
   return (
@@ -103,9 +103,11 @@ export default function Result() {
         </section>
       )}
 
+      <BuyChoice scan={scan} risky={!!recReason} />
+
       <CarcinogenPanel findings={findings} unknown={unchecked && !findings.length} food={food} dish={!!p.restaurantId} />
 
-      <SubstituteList items={subs} reason={recReason} count={findings.length} />
+      <SubstituteList items={subs} reason={recReason} count={findings.length} fromScanId={scan.id} />
 
       {p.restaurantId && alts.length > 0 && !v.unknown && (
         <Link to={`/alternatives/${scan.id}`} className="btn btn-primary btn-block btn-lg">

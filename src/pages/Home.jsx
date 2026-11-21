@@ -1,18 +1,15 @@
 import { Link } from 'react-router-dom';
-import { ScanBarcode, Stethoscope, ChevronLeft, ChevronRight, Beef, Wheat, UtensilsCrossed } from 'lucide-react';
+import { ScanBarcode, Stethoscope, ChevronLeft, ChevronRight, UtensilsCrossed } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import ScreeningNudge from '../components/ScreeningNudge.jsx';
-import ScoreRing from '../components/ScoreRing.jsx';
 import ScanRow from '../components/ProductRow.jsx';
 import AdBanner from '../components/AdBanner.jsx';
 import { useI18n } from '../i18n/index.jsx';
-import { weeklyGutScore } from '../lib/gutScore.js';
 import { isScreeningEligible } from '../lib/eligibility.js';
 import { getScans, getProfile } from '../lib/storage.js';
 
 export default function Home() {
   const { t, dir } = useI18n();
-  const gut = weeklyGutScore();
   const eligible = isScreeningEligible();
   const recent = getScans().slice(0, 3);
   const name = (getProfile()?.name || '').trim();
@@ -42,28 +39,6 @@ export default function Home() {
           <small>{t('home.placesText')}</small>
         </span>
         <Chevron size={20} />
-      </Link>
-
-      <Link to="/gut-score" className="card gut-card">
-        <ScoreRing score={gut.score} size={92} />
-        <div className="gut-card-main">
-          <h2>{t('home.gutTitle')}</h2>
-          {gut.scanCount === 0 ? (
-            <p className="muted small">{t('home.gutEmpty')}</p>
-          ) : (
-            <div className="mini-stats">
-              <span>
-                <Beef size={16} /> {gut.meatCount} · {t('gut.meat')}
-              </span>
-              <span>
-                <Wheat size={16} /> {gut.fiberDays} · {t('gut.fiberDays')}
-              </span>
-            </div>
-          )}
-          <span className="link-more">
-            {t('home.viewDetails')} <Chevron size={16} />
-          </span>
-        </div>
       </Link>
 
       {eligible && <ScreeningNudge />}

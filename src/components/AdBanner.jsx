@@ -43,7 +43,7 @@ export default function AdBanner({ placement = 'home' }) {
           {t('ad.remove')}
         </Link>
       </div>
-      <Link to="/advertise?from=hypofarm" className="ad-body">
+      <Link to="/store/v-hypofarm" className="ad-body">
         <HypofarmArt />
         <div className="ad-text">
           <span className="ad-brand">

@@ -17,7 +17,6 @@ const GREETING = words(['مرحبا', 'اهلا', 'السلام', 'هلا', 'hel
 const THANKS = words(['شكرا', 'يعطيك', 'thanks', 'thank']);
 const BOOKING = words(['موعد', 'احجز', 'حجز', 'استشاره', 'book', 'appointment', 'consultation', 'consult']);
 const SCREENING = words(['فحص', 'تنظير', 'screening', 'fit', 'colonoscopy', 'checkup', 'check']);
-const SCORE = words(['نقاطي', 'نقاط', 'score', 'gut']);
 const FIBRE = words(['الياف', 'fibre', 'fiber', 'wholegrain', 'شوفان', 'oats', 'برغل', 'bulgur', 'فريكه', 'freekeh', 'عدس', 'lentils', 'حمص']);
 const MEAT = words(['لحم', 'لحوم', 'meat', 'لانشون', 'luncheon', 'مرتديلا', 'mortadella', 'نقانق', 'sausage', 'sausages', 'شاورما', 'shawarma', 'برجر', 'burger']);
 const SUGAR = words(['سكر', 'sugar', 'عصير', 'juice', 'غازي', 'كولا', 'cola', 'soda', 'حلويات', 'sweets']);
@@ -28,13 +27,13 @@ const COSMETICS = words(['مكياج', 'makeup', 'كحل', 'kohl', 'شامبو',
 const t = (ar, en) => ({ ar, en });
 
 export const QUICK = {
-  ar: ['كيف أرفع الألياف؟', 'بدائل اللانشون', 'ما رأيك بنقاطي؟', 'أفكار فطور صحي', 'متى أفحص أمعائي؟', 'احجز استشارة'],
-  en: ['How do I eat more fibre?', 'Alternatives to luncheon meat', 'How is my score?', 'Healthy breakfast ideas', 'When should I get screened?', 'Book a consultation'],
+  ar: ['كيف أرفع الألياف؟', 'بدائل اللانشون', 'أفكار سناك صحي', 'أفكار فطور صحي', 'متى أفحص أمعائي؟', 'احجز استشارة'],
+  en: ['How do I eat more fibre?', 'Alternatives to luncheon meat', 'Healthy snack ideas', 'Healthy breakfast ideas', 'When should I get screened?', 'Book a consultation'],
 };
 
 /**
  * @param {string} input user message
- * @param {{score:number, meat:number, fiber:number, eligible:boolean, age:number, name:string, scans:number}} ctx
+ * @param {{eligible:boolean, age:number, name:string}} ctx
  * @returns {{ text: {ar,en}, card?: 'booking', symptoms?: boolean }}
  */
 export function nutritionistReply(input, ctx) {
@@ -70,21 +69,6 @@ export function nutritionistReply(input, ctx) {
             'يُنصح عادةً ببدء الفحص من عمر 45، أو أبكر إذا كان هناك تاريخ عائلي لسرطان القولون. تحدث مع طبيبك إذا كان لديك قلق.',
             'Screening is usually recommended from age 45, or earlier with a family history of bowel cancer. Talk to your doctor if you have any concern.',
           ),
-    };
-
-  if (SCORE.test(n))
-    return {
-      text:
-        ctx.scans === 0
-          ? t('لا توجد مسوحات لهذا الأسبوع بعد. امسح ما تشتريه وسأعطيك رأيي في نمطك الغذائي.', "You haven't scanned anything this week yet. Scan what you buy and I'll give you feedback on your pattern.")
-          : t(
-              `نقاطك هذا الأسبوع ${ctx.score}/100. لديك ${ctx.meat} من اللحوم المصنّعة/الحمراء و${ctx.fiber} أيام فيها حبوب كاملة أو ألياف. ${
-                ctx.meat >= 2 ? 'جرّب تقليل اللحوم المصنّعة: التونة أو اللبنة أو الحمص بدائل جيدة.' : ctx.fiber < 3 ? 'أضف الشوفان أو الخبز الأسمر أو العدس لرفع الألياف.' : 'نمط جيد، حافظ عليه!'
-              }`,
-              `Your score this week is ${ctx.score}/100, with ${ctx.meat} processed/red-meat items and ${ctx.fiber} days with wholegrain or fibre. ${
-                ctx.meat >= 2 ? 'Try cutting processed meat: tuna, labaneh or hummus are good swaps.' : ctx.fiber < 3 ? 'Add oats, brown bread or lentils to raise your fibre.' : 'A good pattern — keep it up!'
-              }`,
-            ),
     };
 
   if (FIBRE.test(n))
@@ -148,8 +132,8 @@ export function nutritionistReply(input, ctx) {
 
   return {
     text: t(
-      'سؤال جيد! أستطيع مساعدتك في: الألياف، اللحوم المصنّعة، السكر، الوجبات، الفحص ونقاطك. لأي سؤال آخر يمكنك حجز استشارة مع أخصائي تغذية الآن.',
-      'Good question! I can help with fibre, processed meat, sugar, meals, screening and your score. For anything else, you can book a consultation with a nutritionist now.',
+      'سؤال جيد! أستطيع مساعدتك في: الألياف، اللحوم المصنّعة، السكر، الوجبات والفحص. لأي سؤال آخر يمكنك حجز استشارة مع أخصائي تغذية الآن.',
+      'Good question! I can help with fibre, processed meat, sugar, meals and screening. For anything else, you can book a consultation with a nutritionist now.',
     ),
     card: 'booking',
   };

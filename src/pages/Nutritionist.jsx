@@ -3,7 +3,6 @@ import { Send, CalendarCheck, Clock } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { nutritionistReply, QUICK } from '../lib/nutritionistBot.js';
-import { weeklyGutScore } from '../lib/gutScore.js';
 import { getProfile } from '../lib/storage.js';
 import { isScreeningEligible } from '../lib/eligibility.js';
 
@@ -25,10 +24,8 @@ export default function Nutritionist() {
   }, [messages, typing]);
 
   function ctx() {
-    const gut = weeklyGutScore();
     const p = getProfile() || {};
     return {
-      score: gut.score, meat: gut.meatCount, fiber: gut.fiberDays, scans: gut.scanCount,
       eligible: isScreeningEligible(), age: Number(p.age) || 0, name: (p.name || '').trim(),
     };
   }
