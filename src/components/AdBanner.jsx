@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n/index.jsx';
-import { isPremium } from '../lib/storage.js';
 
-// Sample sponsored banner showing how farms & stores can advertise healthy
-// products. Never shown on health screens (screening, warning signs, FIT) and
-// hidden for Premium users. Ad policy: only "green" healthy products (see /advertise).
+// Sponsored banner for farms & stores selling healthy products; opens the
+// advertiser's store. Never shown on health screens (screening, warning signs, FIT).
+// Shown to everyone, Premium included. Ad policy: only "green" healthy products (see /advertise).
 function HypofarmArt() {
   return (
     <svg viewBox="0 0 120 90" className="ad-art" aria-hidden="true">
@@ -34,14 +33,10 @@ function HypofarmArt() {
 
 export default function AdBanner({ placement = 'home' }) {
   const { t } = useI18n();
-  if (isPremium()) return null;
   return (
     <aside className="ad-banner" aria-label={t('ad.label')} data-placement={placement}>
       <div className="ad-top">
         <span className="ad-tag">{t('ad.label')}</span>
-        <Link to="/premium" className="ad-remove">
-          {t('ad.remove')}
-        </Link>
       </div>
       <Link to="/store/v-hypofarm" className="ad-body">
         <HypofarmArt />

@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Crown, Check, Ban, Users, ShoppingBasket, ChefHat, Salad, ShieldCheck } from 'lucide-react';
+import { Crown, Check, Users, ShoppingBasket, ChefHat, Salad, ShieldCheck } from 'lucide-react';
 import { Page } from '../components/Layout.jsx';
 import { useI18n } from '../i18n/index.jsx';
 import { getPremium, startPremium, cancelPremium } from '../lib/storage.js';
 
 const FEATURES = [
-  { key: 'adFree', icon: Ban },
   { key: 'family', icon: Users, to: '/family' },
   { key: 'shopping', icon: ShoppingBasket, to: '/shopping-list' },
   { key: 'recipes', icon: ChefHat, soon: true },
