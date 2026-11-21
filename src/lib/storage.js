@@ -165,7 +165,7 @@ export const deleteScan = (id) => write(KEYS.scans, getScans().filter((s) => s.i
 /** Everything stored on this phone, as a downloadable JSON file. */
 export function exportData() {
   const data = {
-    app: 'Clean Nutrition',
+    app: 'Wafi',
     exportedAt: new Date().toISOString(),
     profile: getProfile(),
     settings: getSettings(),

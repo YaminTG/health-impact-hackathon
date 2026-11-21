@@ -39,7 +39,7 @@ function images(p) {
 }
 
 async function fetchProduct(host, code, timeoutMs) {
-  const url = `${host}/api/v2/product/${code}.json?fields=${FIELDS}&app_name=CleanNutritionJO-Hackathon&app_version=0.2`;
+  const url = `${host}/api/v2/product/${code}.json?fields=${FIELDS}&app_name=WafiJO-Hackathon&app_version=0.2`;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {

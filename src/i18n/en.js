@@ -1,5 +1,5 @@
 const en = {
-  'app.name': 'Clean Nutrition',
+  'app.name': 'Wafi',
   'app.tagline': 'Eat smart for a healthy gut',
   'lang.toggle': 'عربي',
 

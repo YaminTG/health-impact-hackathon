@@ -1,5 +1,5 @@
 const ar = {
-  'app.name': 'غذاء نظيف',
+  'app.name': 'وافي',
   'app.tagline': 'كُل بذكاء لأمعاء صحية',
   'lang.toggle': 'EN',
 

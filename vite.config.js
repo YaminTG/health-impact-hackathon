@@ -27,8 +27,8 @@ export default defineConfig(({ mode }) => ({
       registerType: 'prompt',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'favicon-64.png'],
       manifest: {
-        name: 'Clean Nutrition – Bowel Health Jordan',
-        short_name: 'Clean Nutrition',
+        name: 'Wafi وافي – Bowel Health Jordan',
+        short_name: 'Wafi',
         description:
           'Scan food, see colorectal-cancer diet risk based on evidence, find healthier swaps, and get screening reminders.',
         lang: 'ar',
@@ -38,8 +38,8 @@ export default defineConfig(({ mode }) => ({
         display: 'standalone',
         display_override: ['fullscreen', 'standalone'],
         orientation: 'portrait',
-        theme_color: '#2f7d4a',
-        background_color: '#f7f3ea',
+        theme_color: '#0d2047',
+        background_color: '#f3f5fa',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },

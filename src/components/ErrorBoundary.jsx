@@ -40,8 +40,8 @@ export default class ErrorBoundary extends Component {
     return (
       <div className="boot" role="alert">
         <img src="/favicon.svg" alt="" />
-        <div className="boot-name">غذاء نظيف · Clean Nutrition</div>
-        <div style={{ color: '#11302b', maxWidth: 320, lineHeight: 1.6 }}>
+        <div className="boot-name">وافي · WAFI</div>
+        <div style={{ color: '#0f1b33', maxWidth: 320, lineHeight: 1.6 }}>
           <div>حدث خطأ غير متوقع. أعد التحميل للمتابعة — بياناتك محفوظة على هاتفك.</div>
           <div dir="ltr">Something went wrong. Reload to continue — your data is safe on this phone.</div>
         </div>

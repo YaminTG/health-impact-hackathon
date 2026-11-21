@@ -1,4 +1,4 @@
-# غذاء نظيف · Clean Nutrition: Bowel-Cancer Prevention App (Jordan)
+# وافي · Wafi: Bowel-Cancer Prevention App (Jordan)
 
 Hackathon MVP for the **JBCP / King Hussein Cancer Foundation "Future Health Impact Hackathon"**.
 
